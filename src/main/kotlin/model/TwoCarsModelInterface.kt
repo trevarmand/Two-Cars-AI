@@ -1,12 +1,14 @@
 package twoCars.model
 
+import twoCars.model.scroller.Scroller
+
 interface TwoCarsModelInterface {
     /**
-     * Switches the lane of the car on the given side.
+     * Switches the lane of the car towards the given side.
      *
-     * @param side A string, either "left" or "right"
+     * @param direction A string, either "left" or "right"
      */
-    fun switchLane(side: String)
+    fun switchLane(direction: String)
 
     /**
      * Returns the current score.
@@ -23,5 +25,5 @@ interface TwoCarsModelInterface {
     /**
      * Return a list of the active scrolling obstacles (squares, circles, etc) in the program.
      */
-    fun getScrollers(): List<Scroller>?
+    fun getScrollers(): List<List<Scroller>>
 }
