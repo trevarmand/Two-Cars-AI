@@ -26,4 +26,9 @@ interface TwoCarsModelInterface {
      * Return a list of the active scrolling obstacles (squares, circles, etc) in the program.
      */
     fun getScrollers(): List<List<Scroller>>
+
+    /**
+     * Is the game over?
+     */
+    fun isGameOver() : Boolean
 }

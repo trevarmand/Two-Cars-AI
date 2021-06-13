@@ -8,21 +8,20 @@ abstract class Scroller {
     /**
      * The current lane of this scroller.
      */
-    private var lane = 0
-        get() = lane
-
+    var lane = 0
+        private set
 
     /**
      * The Y position of the scroller, as a % of the vertical length of the screen.
      * Using a % allows us to not bind model specifics to the details of the UI.
      */
-    private var yPosn = 0.0
-        get() = yPosn
+    var yPosn = 0.0
+        private set
 
     /**
      * Updates this Mover's y position to simulate vertical movement.
      */
-    fun move(distance: Float) {
+    fun move(distance: Double) {
         yPosn += distance
     }
 

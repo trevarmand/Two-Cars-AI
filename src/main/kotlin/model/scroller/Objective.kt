@@ -1,14 +1,14 @@
 package twoCars.model.scroller
 
-interface Objective {
+abstract class Objective : Scroller() {
 
     /**
      * Return the reward given for collecting this objective.
      */
-    fun getReward() : Int
+    abstract fun getReward() : Int
 
     /**
      * Is it mandatory to collect this mover?
      */
-    fun isMandatory() : Boolean
+    abstract fun isMandatory() : Boolean
 }

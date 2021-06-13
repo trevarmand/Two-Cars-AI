@@ -1,6 +1,9 @@
 package twoCars.model
 
+import tornadofx.getProperty
+import twoCars.model.scroller.Objective
 import twoCars.model.scroller.Scroller
+import twoCars.model.scroller.ScrollerType
 
 class TwoCarsModel : TwoCarsModelInterface {
 
@@ -17,6 +20,7 @@ class TwoCarsModel : TwoCarsModelInterface {
      * The tick rate specifies how fast the obstacles are moving down the screen.
      * This allows us to increase the rate obstacles scroll at.
      * A tick rate of 0.5 means the obstacles move 0.5% of the vertical distance of the world each tick.
+     * The yPson of scroller increments by tickRate amount every tick.
      */
     private var tickRate = 0.5
 
@@ -30,6 +34,8 @@ class TwoCarsModel : TwoCarsModelInterface {
      * A set of lists representing lanes, each occupied by a set of Scrollers.
      */
     private val lanes: List<MutableList<Scroller>>
+
+    private var gameOver = false
 
     /**
      * A basic constructor.
@@ -71,19 +77,51 @@ class TwoCarsModel : TwoCarsModelInterface {
      * Step forward one tick. Update scroller positions and check for collisions.
      */
     override fun step() {
-        TODO("Not yet implemented")
+        for (lane in this.lanes) {
+            for (scroller in lane) {
+                scroller.move(tickRate)
+            }
+        }
         handleCollisions()
     }
 
     /**
-     * Determine if the car is currently collecting, collinding, or neither.
+     * Determine if the car is currently collecting, colliding, or neither.
+     * Also, determine if the car is missing a circle
      */
     fun handleCollisions() {
-        TODO("Not yet implemented")
+
+        // First, are we hitting a square?
+        var squares = this.lanes[car.currentLane].filter { it.yPosn <= car.yPosn && it.type == ScrollerType.SQUARE}
+        if (squares.isNotEmpty()) {
+            gameOver = true
+            return
+        }
+
+        // Are we missing a circle? Are we collecting a star or circle?
+        for (lane in this.lanes) {
+            var targets = lane.filter { it.yPosn <= car.yPosn && it is Objective}
+            for (target in targets) {
+                // have to add this check - Kotlin isn't smart enough to smart cast based on filter
+                if(target is Objective) {
+                    if (target.lane != car.currentLane && target.isMandatory()) {
+                        this.gameOver = true
+                        return
+                    }
+                    if (target.lane == car.currentLane){
+                        this.score += target.getReward()
+                    }
+                }
+            }
+        }
     }
 
     override fun getScrollers(): List<List<Scroller>> {
         return this.lanes
+    }
+
+    override fun isGameOver(): Boolean {
+        return this.gameOver
     }
 
 

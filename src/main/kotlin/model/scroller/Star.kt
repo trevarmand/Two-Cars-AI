@@ -1,7 +1,7 @@
 package twoCars.model.scroller
 
 class Star (lane: Int,
-            override val type: ScrollerType = ScrollerType.STAR): Scroller(), Objective {
+            override val type: ScrollerType = ScrollerType.STAR): Objective() {
 
     /**
      * The reward of collecting a circle is 1 point.

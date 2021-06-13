@@ -13,8 +13,8 @@ class Car {
     /**
      * What lane does the car currently occupy?
      */
-    private var currentLane = 0
-        get() = currentLane
+    var currentLane = 0
+        private set
 
     /**
      * The total number of lanes in the world.
@@ -26,7 +26,7 @@ class Car {
      * The vertical position of the car.
      * For now, this won't change; in the future, that may be controllable by the agent.
      */
-    private val yPosn: Int
+    val yPosn: Int
 
     /**
      * Move the car left or right.
