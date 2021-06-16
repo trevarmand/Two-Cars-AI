@@ -27,7 +27,7 @@ abstract class Scroller {
      * Updates this Mover's y position to simulate vertical movement.
      */
     fun move(distance: Double) {
-        yPosn += distance
+        yPosn -= distance
     }
 
     /**

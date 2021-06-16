@@ -7,7 +7,7 @@ class Car {
     constructor(currentLane: Int, totalLanes: Int) {
         this.currentLane = currentLane
         this.totalLanes = totalLanes
-        this.yPosn = 10
+        this.yPosn = 10.0
     }
 
     /**
@@ -26,7 +26,7 @@ class Car {
      * The vertical position of the car.
      * For now, this won't change; in the future, that may be controllable by the agent.
      */
-    val yPosn: Int
+    val yPosn: Double
 
     /**
      * Move the car left or right.

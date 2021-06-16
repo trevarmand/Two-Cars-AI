@@ -6,10 +6,10 @@ import twoCars.model.scroller.*
 class TwoCarsModel : TwoCarsModelInterface {
 
     // The current score of the game.
-    private var score = 0
+    private var score : Int
 
     // How many times has the world ticked?
-    private var currentTick = 0
+    private var currentTick : Int
 
     // The car!
     private val car : Car
@@ -20,7 +20,7 @@ class TwoCarsModel : TwoCarsModelInterface {
      * A tick rate of 0.5 means the obstacles move 0.5% of the vertical distance of the world each tick.
      * The yPson of scroller increments by tickRate amount every tick.
      */
-    private var tickRate = 0.5
+    private var tickRate : Double
 
     /**
      * The number of lanes in the world.
@@ -39,6 +39,9 @@ class TwoCarsModel : TwoCarsModelInterface {
      * A basic constructor.
      */
     constructor() {
+        this.score = 0
+        this.currentTick = 0
+        this.tickRate = 1.0
         this.numLanes = 3
         this.lanes = arrayListOf<MutableList<Scroller>>()
         this.car = Car(1, numLanes)
@@ -48,6 +51,8 @@ class TwoCarsModel : TwoCarsModelInterface {
      * Start with a custom tickrate
      */
     constructor(tickRate: Double) {
+        this.score = 0
+        this.currentTick = 0
         this.numLanes = 3
         this.tickRate = tickRate
         this.lanes = arrayListOf<MutableList<Scroller>>()
@@ -58,6 +63,9 @@ class TwoCarsModel : TwoCarsModelInterface {
      * Start with a unique number of lanes
      */
     constructor(numLanes: Int) {
+        this.score = 0
+        this.currentTick = 0
+        this.tickRate = 1.0
         this.numLanes = numLanes
         this.lanes = arrayListOf<MutableList<Scroller>>()
         this.car = Car(numLanes / 2, numLanes)
@@ -71,6 +79,9 @@ class TwoCarsModel : TwoCarsModelInterface {
      * This constructor is not robust against poorly-formatted strings.
      */
     constructor(stringRepresentation: String) {
+        this.score = 0
+        this.currentTick = 0
+        this.tickRate = 1.0
         this.numLanes = 0
         this.lanes = arrayListOf<MutableList<Scroller>>()
         var objects = stringRepresentation.split(",")
