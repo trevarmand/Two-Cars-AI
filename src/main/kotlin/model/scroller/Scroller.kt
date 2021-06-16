@@ -5,6 +5,11 @@ package twoCars.model.scroller
  */
 abstract class Scroller {
 
+    constructor(lane: Int, yPosn: Double){
+        this.lane = lane
+        this.yPosn = yPosn
+    }
+
     /**
      * The current lane of this scroller.
      */

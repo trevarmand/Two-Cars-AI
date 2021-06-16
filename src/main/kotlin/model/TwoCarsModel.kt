@@ -1,9 +1,7 @@
 package twoCars.model
 
 import tornadofx.getProperty
-import twoCars.model.scroller.Objective
-import twoCars.model.scroller.Scroller
-import twoCars.model.scroller.ScrollerType
+import twoCars.model.scroller.*
 
 class TwoCarsModel : TwoCarsModelInterface {
 
@@ -27,13 +25,13 @@ class TwoCarsModel : TwoCarsModelInterface {
     /**
      * The number of lanes in the world.
      */
-    private val numLanes: Int
+    private var numLanes: Int
 
 
     /**
      * A set of lists representing lanes, each occupied by a set of Scrollers.
      */
-    private val lanes: List<MutableList<Scroller>>
+    private val lanes: MutableList<MutableList<Scroller>>
 
     private var gameOver = false
 
@@ -65,6 +63,44 @@ class TwoCarsModel : TwoCarsModelInterface {
         this.car = Car(numLanes / 2, numLanes)
     }
 
+    /**
+     * Allows for loading a static model representation.
+     * Strings should be formatted as such:
+     * Type lane yPosn, type lane yPosn, type lane yPosn, ...
+     * Circle 0 50, Square 0 100, Square 1 25
+     * This constructor is not robust against poorly-formatted strings.
+     */
+    constructor(stringRepresentation: String) {
+        this.numLanes = 0
+        this.lanes = arrayListOf<MutableList<Scroller>>()
+        var objects = stringRepresentation.split(",")
+        for(obj in objects) {
+            var details = obj.trim().split(" ")
+            var type = details[0]
+            var lane = details[1].toInt()
+            var yPosn = details[2].toDouble()
+
+            if (this.lanes.isEmpty() || this.lanes.size <= lane) {
+                this.numLanes += 1
+                this.lanes.add(lane, ArrayList<Scroller>())
+            }
+
+            if(type == "Circle") {
+                var newCircle = Circle(lane, yPosn)
+                this.lanes[lane].add(newCircle)
+            }
+            if(type == "Square") {
+                var newSquare = Square(lane, yPosn)
+                this.lanes[lane].add(newSquare)
+            }
+            if(type == "Star") {
+                var newStar = Star(lane, yPosn)
+                this.lanes[lane].add(newStar)
+            }
+        }
+        this.car = Car(this.numLanes / 2, this.numLanes)
+    }
+
     override fun switchLane(direction: String) {
         this.car.switchLane(direction)
     }
@@ -83,6 +119,7 @@ class TwoCarsModel : TwoCarsModelInterface {
             }
         }
         handleCollisions()
+        TODO("remove obstacles that are below the screen")
     }
 
     /**

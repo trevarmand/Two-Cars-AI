@@ -1,6 +1,6 @@
 package twoCars.model.scroller
 
-abstract class Objective : Scroller() {
+abstract class Objective(lane: Int, yPosn: Double) : Scroller(lane, yPosn) {
 
     /**
      * Return the reward given for collecting this objective.
