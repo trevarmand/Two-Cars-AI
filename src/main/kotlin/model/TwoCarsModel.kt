@@ -119,7 +119,8 @@ class TwoCarsModel : TwoCarsModelInterface {
             }
         }
         handleCollisions()
-        TODO("remove obstacles that are below the screen")
+        ++currentTick
+//        TODO("remove obstacles that are below the screen")
     }
 
     /**
@@ -155,6 +156,10 @@ class TwoCarsModel : TwoCarsModelInterface {
 
     override fun getScrollers(): List<List<Scroller>> {
         return this.lanes
+    }
+
+    override fun getCarInfo(): Car {
+        return this.car
     }
 
     override fun isGameOver(): Boolean {

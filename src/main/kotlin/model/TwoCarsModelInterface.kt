@@ -28,6 +28,12 @@ interface TwoCarsModelInterface {
     fun getScrollers(): List<List<Scroller>>
 
     /**
+     * Returns information about the car
+     * Good design would be to pass back an immutable car, but that's not a priority for this project right now.
+     */
+    fun getCarInfo(): Car
+
+    /**
      * Is the game over?
      */
     fun isGameOver() : Boolean
