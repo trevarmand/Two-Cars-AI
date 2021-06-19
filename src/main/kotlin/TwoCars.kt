@@ -12,6 +12,8 @@ fun main(args : Array<String>) {
     simpleModel.switchLane("left")
     println(simpleModel.getCarInfo().currentLane)
 
+    print(simpleModel.getScore())
+
     // Test colliding with a circle
     // The score should keep incrementing; the circle still needs to be removed from the world after collection.
     for (i in 0..100) {
