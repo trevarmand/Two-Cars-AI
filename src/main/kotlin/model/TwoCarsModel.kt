@@ -120,6 +120,10 @@ class TwoCarsModel : TwoCarsModelInterface {
         return this.score
     }
 
+    override fun getNumLanes(): Int {
+        return this.numLanes
+    }
+
     /**
      * Step forward one tick. Update scroller positions and check for collisions.
      */

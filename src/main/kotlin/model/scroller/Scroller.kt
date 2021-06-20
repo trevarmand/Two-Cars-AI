@@ -31,6 +31,24 @@ abstract class Scroller {
     }
 
     /**
+     * Get scroller's y-position
+     *
+     * @return y-coordinate of scroller
+     */
+    fun getPosn() :Double {
+        return yPosn
+    }
+
+    /**
+     * Get scroller's lane number
+     *
+     * @return lane number of scroller
+     */
+    fun getLaneNum() :Int {
+        return lane
+    }
+
+    /**
      * Return the type of this mover
      * MUST BE OVERRIDDEN
      */

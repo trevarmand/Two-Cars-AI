@@ -18,6 +18,13 @@ interface TwoCarsModelInterface {
     fun getScore(): Int
 
     /**
+     * Returns number of lanes in game.
+     *
+     * @return number of lanes
+     */
+    fun getNumLanes(): Int
+
+    /**
      * Update scroller positions and handle collisions.
      */
     fun step()
