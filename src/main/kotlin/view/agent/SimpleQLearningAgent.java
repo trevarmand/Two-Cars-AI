@@ -18,6 +18,8 @@ public class SimpleQLearningAgent {
         for (i in 0...model.getNumLanes()) {
             utils.put(0, 0)
         }
+
+        initUtils()
     }
 
     /**
