@@ -5,6 +5,8 @@ package view.agent;
  */
 public class SimpleQLearningAgent {
 
+    private var iterations = 100 // TODO: make this configurable
+
     private val model : TwoCarsModelInterface
 
     private val utils : Map<Int, Double>
@@ -29,6 +31,14 @@ public class SimpleQLearningAgent {
                 // closer objects are weighted more
                 weight = 100 - scroller.getPosn()
                 utils[scroller.getLaneNum()] = utils[scroller.getLaneNum()] + QLearningUtil.getScrollerVal(scroller.type)
+            }
+        }
+    }
+
+    override fun solve() {
+        for (i in 0...iterations) {
+            for (j in 0...model.getNumLanes()) {
+                var newUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
             }
         }
     }

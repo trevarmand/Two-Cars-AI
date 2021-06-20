@@ -11,4 +11,9 @@ interface QLearningAgent {
      */
     fun initUtils()
 
+    /**
+     * Performs value iteration, updates utlities accordingly
+     */
+    fun solve()
+
 }
