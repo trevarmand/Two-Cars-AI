@@ -1,11 +1,15 @@
 package twoCars.view.agent
 
+import twoCars.model.learn.Move
+import twoCars.model.TwoCarsModelInterface
+
 /**
  * Different types of Q learning Agents
  */
-public class SimpleQLearningAgent {
+public class SimpleQLearningAgent : QLearningAgent {
 
     private var iterations = 100 // TODO: make this configurable
+    private var discountFactor = 0.8
 
     private val model : TwoCarsModelInterface
 
@@ -16,8 +20,9 @@ public class SimpleQLearningAgent {
      */
     constructor(model: TwoCarsModelInterface) {
         this.model = model
-        for (i in 0...model.getNumLanes()) {
-            utils.put(0, 0)
+        this.utils = HashMap<Int, Double>()
+        for (i in 0..model.getNumLanes()) {
+            utils.put(0, 0.0)
         }
 
         initUtils()
@@ -29,11 +34,11 @@ public class SimpleQLearningAgent {
      */
     // this can probably be private since should only be called upon initialization
     override fun initUtils() {
-        lanes = model.getScrollers()
+        var lanes = model.getScrollers()
         for (lane in lanes) {
             for (scroller in lane) {
                 // closer objects are weighted more
-                weight = 100 - scroller.getPosn()
+                var weight = 100 - scroller.getPosn()
                 utils[scroller.getLaneNum()] = utils[scroller.getLaneNum()] + QLearningUtil.getScrollerVal(scroller.type)
             }
         }
@@ -44,17 +49,17 @@ public class SimpleQLearningAgent {
      */
     // this will need to be called in the entry point
     override fun solve() {
-        for (i in 0...iterations) {
-            for (j in 0...model.getNumLanes()) {
+        for (i in 0..iterations) {
+            for (j in 0..model.getNumLanes()) {
             var newUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
             utils[j] = newUtil
         }
         }
     }
 
-    override fun getBestMove() : Move {
-        var leftUtil = 0
-        var rightUtil = 0
+    override fun getBestMove(laneNum :Int) : Move {
+        var leftUtil = 0.0
+        var rightUtil = 0.0
         var stayUtil = utils[laneNum]
         //edge case: can't move left
         if (laneNum == 0) {

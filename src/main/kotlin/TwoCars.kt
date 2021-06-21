@@ -25,7 +25,7 @@ fun main(args : Array<String>) {
         // we should probably be stepping before making a decision right?
         simpleModel.step()
         learner.solve()
-        var move = learner.getBestMove()
+        var move = learner.getBestMove(simpleModel.getCarInfo().currentLane)
         simpleModel.switchLane(move)
 //        println(simpleModel.getScrollers()[0][0].yPosn)
         if (simpleModel.getCarInfo().yPosn == simpleModel.getScrollers()[0][0].yPosn) {

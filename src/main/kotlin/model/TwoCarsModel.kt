@@ -2,7 +2,7 @@ package twoCars.model
 
 import tornadofx.getProperty
 import twoCars.model.scroller.*
-import twoCars.model.learn.MOVE
+import twoCars.model.learn.Move
 
 class TwoCarsModel : TwoCarsModelInterface {
 
