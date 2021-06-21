@@ -2,7 +2,8 @@
 package twoCars
 
 import twoCars.model.TwoCarsModel
-
+import twoCars.view.agent.SimpleQLearningAgent
+import twoCars.model.learn.Move
 
 fun main(args : Array<String>) {
     // Describes a basic world: Shape lane yPosn, Shape lane yPosn....
@@ -14,7 +15,7 @@ fun main(args : Array<String>) {
     val learner = SimpleQLearningAgent(simpleModel)
 
     println(simpleModel.getCarInfo().currentLane)
-    simpleModel.switchLane("left")
+    simpleModel.switchLane(Move.LEFT)
     println(simpleModel.getCarInfo().currentLane)
 
     print(simpleModel.getScore())
@@ -24,7 +25,9 @@ fun main(args : Array<String>) {
     for (i in 0..100) {
         // we should probably be stepping before making a decision right?
         simpleModel.step()
-
+        learner.solve()
+        var move = learner.getBestMove()
+        simpleModel.switchLane(move)
 //        println(simpleModel.getScrollers()[0][0].yPosn)
         if (simpleModel.getCarInfo().yPosn == simpleModel.getScrollers()[0][0].yPosn) {
             print("\n\nCOLLISION! ")

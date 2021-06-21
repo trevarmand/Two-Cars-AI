@@ -1,6 +1,7 @@
 package twoCars.model
 
 import java.lang.IllegalArgumentException
+import twoCars.model.learn.MOVE
 
 class Car {
 

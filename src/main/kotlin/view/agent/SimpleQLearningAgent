@@ -1,4 +1,4 @@
-package view.agent;
+package twoCars.view.agent
 
 /**
  * Different types of Q learning Agents
@@ -10,6 +10,7 @@ public class SimpleQLearningAgent {
     private val model : TwoCarsModelInterface
 
     private val utils : Map<Int, Double>
+
     /**
      * Constructor that takes in model
      */
@@ -45,9 +46,9 @@ public class SimpleQLearningAgent {
     override fun solve() {
         for (i in 0...iterations) {
             for (j in 0...model.getNumLanes()) {
-                var newUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
-                utils[j] = newUtil
-            }
+            var newUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
+            utils[j] = newUtil
+        }
         }
     }
 
@@ -82,6 +83,6 @@ public class SimpleQLearningAgent {
         } else {
             return Move.STAY
         }
-             
+
     }
 }

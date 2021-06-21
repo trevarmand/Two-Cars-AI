@@ -1,4 +1,6 @@
 package twoCars.view.agent
+import twoCars.model.learn.MOVE
+
 
 interface QLearningAgent {
     /**

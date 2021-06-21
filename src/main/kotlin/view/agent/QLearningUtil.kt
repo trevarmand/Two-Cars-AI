@@ -1,4 +1,6 @@
 package twoCars.view.agent
+import twoCars.model.learn.MOVE
+import twoCars.model.scroller.ScrollerType
 
 /**
  * Helper functions pertaining to Q-Learning
@@ -6,7 +8,7 @@ package twoCars.view.agent
 class QLearningUtil {
     companion object {
         // TODO: reconsider the weights we want to assign to these
-        fun getScrollerVal(type) {
+        fun getScrollerVal(type) : Int{
             if (type == SQUARE) {
                 return -10
             } else if (type == CIRCLE) {
