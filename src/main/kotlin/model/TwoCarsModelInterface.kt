@@ -1,7 +1,7 @@
 package twoCars.model
 
 import twoCars.model.scroller.Scroller
-import twoCars.model.learn.MOVE
+import twoCars.model.learn.Move
 
 
 interface TwoCarsModelInterface {

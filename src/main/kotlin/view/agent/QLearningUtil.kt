@@ -1,5 +1,5 @@
 package twoCars.view.agent
-import twoCars.model.learn.MOVE
+import twoCars.model.learn.Move
 import twoCars.model.scroller.ScrollerType
 
 /**
