@@ -31,14 +31,15 @@ class Car {
     /**
      * Move the car left or right.
      */
-    fun switchLane(direction : String) {
-        if(direction == "left" && this.currentLane != 0){
+    fun switchLane(direction : Move) {
+        if(direction == Move.LEFT && this.currentLane != 0){
             this.currentLane -= 1
         }
-        else if(direction == "right" && this.currentLane != totalLanes - 1){
+        else if(direction == Move.RIGHT && this.currentLane != totalLanes - 1){
             this.currentLane += 1
         } else {
-            throw IllegalArgumentException("switchLane direction must be 'left' or 'right'")
+            // lane remains the same: just return
+            return
         }
     }
 }

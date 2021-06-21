@@ -6,9 +6,9 @@ interface TwoCarsModelInterface {
     /**
      * Switches the lane of the car towards the given side.
      *
-     * @param direction A string, either "left" or "right"
+     * @param direction Either the left, right, or stay enum value
      */
-    fun switchLane(direction: String)
+    fun switchLane(direction: Move)
 
     /**
      * Returns the current score.

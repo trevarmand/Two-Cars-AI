@@ -112,7 +112,7 @@ class TwoCarsModel : TwoCarsModelInterface {
         this.car = Car(this.numLanes / 2, this.numLanes)
     }
 
-    override fun switchLane(direction: String) {
+    override fun switchLane(direction: Move) {
         this.car.switchLane(direction)
     }
 
