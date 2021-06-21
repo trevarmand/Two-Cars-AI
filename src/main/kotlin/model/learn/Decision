@@ -1,0 +1,35 @@
+package twoCars.model.learn
+
+/**
+ * Struct-like class which returns move that results in best utility, along with the utility value for that lane
+ */
+class Decision {
+
+    // Move that maximizes utility
+    // var or val?
+    public var move : Move
+
+    // utility score
+    public var util : Double
+
+    //
+
+    /**
+     * Default constructor
+     */
+    constructor() {
+        this.move = Move.STAY
+        this.util = 0
+    }
+
+    /**
+     * Custom constructor
+     */
+    constructor(move: Move, util: Double) {
+        this.move = move
+        this.util = util
+    }
+
+
+
+}

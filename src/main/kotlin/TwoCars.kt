@@ -22,7 +22,9 @@ fun main(args : Array<String>) {
     // Test colliding with a circle
     // The score should keep incrementing; the circle still needs to be removed from the world after collection.
     for (i in 0..100) {
+        // we should probably be stepping before making a decision right?
         simpleModel.step()
+
 //        println(simpleModel.getScrollers()[0][0].yPosn)
         if (simpleModel.getCarInfo().yPosn == simpleModel.getScrollers()[0][0].yPosn) {
             print("\n\nCOLLISION! ")

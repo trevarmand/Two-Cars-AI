@@ -26,6 +26,7 @@ public class SimpleQLearningAgent {
      * Will calculate utility for each lane based on objects in that lane. Will use distance from agent
      * to weight each object
      */
+    // this can probably be private since should only be called upon initialization
     override fun initUtils() {
         lanes = model.getScrollers()
         for (lane in lanes) {
@@ -37,6 +38,10 @@ public class SimpleQLearningAgent {
         }
     }
 
+    /**
+     * Will run value iteration to calculate utilities for each of the lanes
+     */
+    // this will need to be called in the entry point
     override fun solve() {
         for (i in 0...iterations) {
             for (j in 0...model.getNumLanes()) {

@@ -18,23 +18,29 @@ class QLearningUtil {
             }
         }
 
-        fun bestUtil(laneNum, laneUtils) {
+        fun bestUtil(laneNum, laneUtils): Int{
             var leftUtil = 0
             var rightUtil = 0
             var stayUtil = laneUtils[laneNum]
+            //edge case: can't move left
             if (laneNum == 0) {
                 leftUtil = stayUtil
             } else {
                 leftUtil = laneUtils[laneNum - 1]
             }
 
+            // edge case: can't move right
             if (laneNum == laneUtils.size - 1) {
                 rightUtil = stayUtil
             } else {
                 rightUtil = laneUtils[laneNum + 1]
             }
 
-            return max(leftUtil, rightUtil, stayUtil)
+            // check for maximum
+            var maxUtil = max(leftUtil, rightUtil, stayUtil)
+            var maxMove = "L"
+
+            return maxUtil
         }
     }
 }
