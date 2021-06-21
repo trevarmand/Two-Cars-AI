@@ -16,4 +16,9 @@ interface QLearningAgent {
      */
     fun solve()
 
+    /**
+     * Returns which of the three moves (left, right, or stay) is best, given utilities
+     */
+    fun getBestMove() : Move
+
 }

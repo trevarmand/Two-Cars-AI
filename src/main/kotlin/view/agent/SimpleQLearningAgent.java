@@ -50,4 +50,38 @@ public class SimpleQLearningAgent {
             }
         }
     }
+
+    override fun getBestMove() : Move {
+        var leftUtil = 0
+        var rightUtil = 0
+        var stayUtil = utils[laneNum]
+        //edge case: can't move left
+        if (laneNum == 0) {
+            leftUtil = stayUtil
+        } else {
+            leftUtil = utils[laneNum - 1]
+        }
+
+        // edge case: can't move right
+        if (laneNum == utils.size - 1) {
+            rightUtil = stayUtil
+        } else {
+            rightUtil = utils[laneNum + 1]
+        }
+
+        // check for maximum
+        var maxUtil = max(leftUtil, rightUtil, stayUtil)
+        var maxMove = Move.LEFT
+
+        // there's probably a cleaner and more efficient way to do this
+        // this is tying highest utility value to corresponding move
+        if (maxUtil == leftUtil) {
+            return Move.LEFT
+        } else if (maxUtil == rightUtil) {
+            return Move.RIGHT
+        } else {
+            return Move.STAY
+        }
+             
+    }
 }
