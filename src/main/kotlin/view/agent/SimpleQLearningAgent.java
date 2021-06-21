@@ -46,6 +46,7 @@ public class SimpleQLearningAgent {
         for (i in 0...iterations) {
             for (j in 0...model.getNumLanes()) {
                 var newUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
+                utils[j] = newUtil
             }
         }
     }

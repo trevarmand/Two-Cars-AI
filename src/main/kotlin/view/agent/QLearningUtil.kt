@@ -38,9 +38,22 @@ class QLearningUtil {
 
             // check for maximum
             var maxUtil = max(leftUtil, rightUtil, stayUtil)
-            var maxMove = "L"
+            //var maxMove = Move.LEFT
+
+            // there's probably a cleaner and more efficient way to do this
+            // this is tying highest utility value to corresponding move
+            /*
+            if (maxUtil == leftUtil) {
+                maxMove = Move.LEFT
+            } else if (maxUtil == rightUtil) {
+                maxMove = Move.RIGHT
+            } else {
+                maxMove = Move.STAY
+            }
+             */
 
             return maxUtil
+            //return new Decision(maxMove, maxUtil)
         }
     }
 }
