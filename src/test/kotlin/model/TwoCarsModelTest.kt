@@ -3,6 +3,7 @@ package model
 import org.junit.jupiter.api.Test
 import twoCars.model.TwoCarsModel
 import twoCars.model.TwoCarsModelInterface
+import twoCars.model.learn.Move
 import twoCars.model.scroller.ScrollerType
 
 class TwoCarsModelTest {
@@ -22,9 +23,9 @@ class TwoCarsModelTest {
     fun switchLane() {
         resetModel()
         assert(simpleModel.getCarInfo().currentLane == 1)
-        simpleModel.switchLane("left")
+        simpleModel.switchLane(Move.LEFT)
         assert(simpleModel.getCarInfo().currentLane == 0)
-        simpleModel.switchLane("right")
+        simpleModel.switchLane(Move.RIGHT)
         assert(simpleModel.getCarInfo().currentLane == 1)
     }
 
@@ -49,7 +50,7 @@ class TwoCarsModelTest {
         assert(simpleModel.getScrollers()[0][0].yPosn == 50.0)
         assert(simpleModel.getScrollers()[0][0].type == ScrollerType.CIRCLE)
         assert(simpleModel.getScore() == 0)
-        simpleModel.switchLane("left")
+        simpleModel.switchLane(Move.LEFT)
         for(i in 1..40) {
             simpleModel.step()
         }
