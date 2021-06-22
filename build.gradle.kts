@@ -15,10 +15,11 @@ repositories {
 dependencies {
     testImplementation(kotlin("test-junit"))
     implementation("no.tornado:tornadofx:1.7.20")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.4.2")
 }
 
 tasks.test {
-    useJUnit()
+    useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile>() {
