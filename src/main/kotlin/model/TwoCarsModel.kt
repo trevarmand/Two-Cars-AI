@@ -165,7 +165,7 @@ class TwoCarsModel : TwoCarsModelInterface {
         }
 
         for(lane in this.lanes) {
-            for(item in lane.filter { it.yPosn <= car.yPosn }) {
+            for(item in lane.filter { it.yPosn <= 0.0 }) {
                 lane.remove(item)
             }
         }
