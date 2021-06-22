@@ -21,10 +21,6 @@ public class SimpleQLearningAgent : QLearningAgent {
     constructor(model: TwoCarsModelInterface) {
         this.model = model
         this.utils = HashMap()
-        for (i in 0..model.getNumLanes()) {
-            utils.put(0, 0.0)
-        }
-
         initUtils()
     }
 
@@ -34,6 +30,11 @@ public class SimpleQLearningAgent : QLearningAgent {
      */
     // this can probably be private since should only be called upon initialization
     override fun initUtils() {
+        // clear utility values so they can be re-calculated after each tick
+        for (i in 0..model.getNumLanes()) {
+            utils.put(0, 0.0)
+        }
+
         var lanes = model.getScrollers()
         for (lane in lanes) {
             for (scroller in lane) {
@@ -52,6 +53,8 @@ public class SimpleQLearningAgent : QLearningAgent {
      */
     // this will need to be called in the entry point
     override fun solve() {
+        // clear utilities from previous tick
+        initUtils()
         for (i in 0..iterations) {
             for (j in 0..model.getNumLanes()) {
                 var newUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
