@@ -39,7 +39,10 @@ public class SimpleQLearningAgent : QLearningAgent {
             for (scroller in lane) {
                 // closer objects are weighted more
                 var weight = 100 - scroller.getPosn()
-                utils[scroller.getLaneNum()] = utils[scroller.getLaneNum()] + QLearningUtil.getScrollerVal(scroller.type)
+                var laneNum = scroller.getLaneNum()
+                var curUtil = utils[laneNum] ?: 0.0
+                utils.put(laneNum, curUtil + QLearningUtil.getScrollerVal(scroller.type))
+                //utils[scroller.getLaneNum()] = utils[scroller.getLaneNum()] + QLearningUtil.getScrollerVal(scroller.type)
             }
         }
     }
@@ -51,17 +54,19 @@ public class SimpleQLearningAgent : QLearningAgent {
     override fun solve() {
         for (i in 0..iterations) {
             for (j in 0..model.getNumLanes()) {
-            var newUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
-            utils[j] = newUtil
-        }
+                var newUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
+                //utils[j] = newUtil
+                utils.put(j, newUtil)
+            }
         }
     }
 
     override fun getBestMove(laneNum :Int) : Move {
-        var leftUtil = 0.0
-        var rightUtil = 0.0
-        var stayUtil = utils[laneNum]
+        var leftUtil = utils[laneNum - 1] ?: 0.0
+        var rightUtil = utils[laneNum + 1] ?: 0.0
+        var stayUtil = utils[laneNum] ?: 0.0
         //edge case: can't move left
+        /*
         if (laneNum == 0) {
             leftUtil = stayUtil
         } else {
@@ -74,9 +79,10 @@ public class SimpleQLearningAgent : QLearningAgent {
         } else {
             rightUtil = utils[laneNum + 1]
         }
+         */
 
         // check for maximum
-        var maxUtil = max(leftUtil, rightUtil, stayUtil)
+        var maxUtil = maxOf(leftUtil, rightUtil, stayUtil)
         var maxMove = Move.LEFT
 
         // there's probably a cleaner and more efficient way to do this
