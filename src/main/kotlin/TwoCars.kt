@@ -47,4 +47,8 @@ fun main(args : Array<String>) {
             return
         }
     }
+
+    print("\n\nNO COLLISION DETECTED! ")
+    print(" SCORE: ")
+    print(simpleModel.getScore())
 }

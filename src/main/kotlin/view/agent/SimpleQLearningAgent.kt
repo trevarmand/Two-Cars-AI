@@ -8,7 +8,7 @@ import twoCars.model.TwoCarsModelInterface
  */
 public class SimpleQLearningAgent : QLearningAgent {
 
-    private var iterations = 100 // TODO: make this configurable
+    private var iterations = 10 // TODO: make this configurable
     private var discountFactor = 0.8
 
     private val model : TwoCarsModelInterface
@@ -31,8 +31,8 @@ public class SimpleQLearningAgent : QLearningAgent {
     // this can probably be private since should only be called upon initialization
     override fun initUtils() {
         // clear utility values so they can be re-calculated after each tick
-        for (i in 0..model.getNumLanes()) {
-            utils.put(0, 0.0)
+        for (i in 0..model.getNumLanes() - 1) {
+            utils.put(i, 0.0)
         }
 
         var lanes = model.getScrollers()
@@ -56,9 +56,11 @@ public class SimpleQLearningAgent : QLearningAgent {
         // clear utilities from previous tick
         initUtils()
         for (i in 0..iterations) {
-            for (j in 0..model.getNumLanes()) {
-                var newUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
+            // believe the .. is inclusive
+            for (j in 0..model.getNumLanes() - 1) {
+                var moveUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
                 //utils[j] = newUtil
+                var newUtil = maxOf(moveUtil, utils[j] ?: 0.0)
                 this.utils.put(j, newUtil)
             }
         }
