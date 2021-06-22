@@ -14,18 +14,19 @@ class QLearningUtil {
             } else if (type == ScrollerType.CIRCLE) {
                 return 1
             } else if (type == ScrollerType.STAR) {
-                return 2
+                return 3
             } else {
                 return 0
             }
         }
 
         // TODO: move this function back to learner so we don't need to pass in utils?
-        fun bestUtil(laneNum :Int, laneUtils :Map<Int, Double>): Int{
-            var leftUtil = 0.0
-            var rightUtil = 0.0
-            var stayUtil = laneUtils[laneNum]?.toDouble()
+        fun bestUtil(laneNum :Int, laneUtils :Map<Int, Double>): Double {
+            var leftUtil = laneUtils[laneNum - 1] ?: 0.0
+            var rightUtil = laneUtils[laneNum + 1] ?: 0.0
+            var stayUtil = laneUtils[laneNum] ?: 0.0
             //edge case: can't move left
+            /*
             if (laneNum == 0) {
                 leftUtil = stayUtil
             } else {
@@ -39,8 +40,10 @@ class QLearningUtil {
                 rightUtil = laneUtils[laneNum + 1]
             }
 
+             */
+
             // check for maximum
-            return max(leftUtil, rightUtil, stayUtil)
+            return maxOf(leftUtil, rightUtil, stayUtil)
         }
     }
 }

@@ -13,14 +13,14 @@ public class SimpleQLearningAgent : QLearningAgent {
 
     private val model : TwoCarsModelInterface
 
-    private val utils : Map<Int, Double>
+    private val utils : MutableMap<Int, Double>
 
     /**
      * Constructor that takes in model
      */
     constructor(model: TwoCarsModelInterface) {
         this.model = model
-        this.utils = HashMap<Int, Double>()
+        this.utils = HashMap()
         for (i in 0..model.getNumLanes()) {
             utils.put(0, 0.0)
         }
@@ -56,7 +56,7 @@ public class SimpleQLearningAgent : QLearningAgent {
             for (j in 0..model.getNumLanes()) {
                 var newUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
                 //utils[j] = newUtil
-                utils.put(j, newUtil)
+                this.utils.put(j, newUtil)
             }
         }
     }
