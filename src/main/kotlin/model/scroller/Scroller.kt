@@ -52,5 +52,5 @@ abstract class Scroller {
      * Return the type of this mover
      * MUST BE OVERRIDDEN
      */
-    abstract val type: ScrollerType?
+    abstract val type: ScrollerType
 }
