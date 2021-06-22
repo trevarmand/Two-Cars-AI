@@ -141,7 +141,7 @@ class TwoCarsModel : TwoCarsModelInterface {
     fun handleCollisions() {
 
         // First, are we hitting a square?
-        var squares = this.lanes[car.currentLane].filter { it.yPosn <= car.yPosn && it.type == ScrollerType.SQUARE}
+        var squares = this.lanes[car.currentLane].filter { it.yPosn == car.yPosn && it.type == ScrollerType.SQUARE}
         if (squares.isNotEmpty()) {
             gameOver = true
             return
@@ -161,6 +161,12 @@ class TwoCarsModel : TwoCarsModelInterface {
                         this.score += target.getReward()
                     }
                 }
+            }
+        }
+
+        for(lane in this.lanes) {
+            for(item in lane.filter { it.yPosn <= car.yPosn }) {
+                lane.remove(item)
             }
         }
     }
