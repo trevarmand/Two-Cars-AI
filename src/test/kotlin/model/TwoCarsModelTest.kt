@@ -1,7 +1,6 @@
 package model
 
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.assertAll
 import twoCars.model.TwoCarsModel
 import twoCars.model.TwoCarsModelInterface
 import twoCars.model.scroller.ScrollerType
