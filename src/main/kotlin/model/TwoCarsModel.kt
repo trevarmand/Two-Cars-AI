@@ -1,6 +1,5 @@
 package twoCars.model
 
-import tornadofx.getProperty
 import twoCars.model.scroller.*
 
 class TwoCarsModel : TwoCarsModelInterface {
@@ -141,7 +140,7 @@ class TwoCarsModel : TwoCarsModelInterface {
     fun handleCollisions() {
 
         // First, are we hitting a square?
-        var squares = this.lanes[car.currentLane].filter { it.yPosn <= car.yPosn && it.type == ScrollerType.SQUARE}
+        var squares = this.lanes[car.currentLane].filter { it.yPosn <= car.yPosn && it.yPosn > car.yPosn - tickRate && it.type == ScrollerType.SQUARE}
         if (squares.isNotEmpty()) {
             gameOver = true
             return
@@ -149,20 +148,35 @@ class TwoCarsModel : TwoCarsModelInterface {
 
         // Are we missing a circle? Are we collecting a star or circle?
         for (lane in this.lanes) {
-            var targets = lane.filter { it.yPosn <= car.yPosn && it is Objective}
-            for (target in targets) {
-                // have to add this check - Kotlin isn't smart enough to smart cast based on filter
-                if(target is Objective) {
-                    if (target.lane != car.currentLane && target.isMandatory()) {
+            var relevantScrollers = lane.filter { it.yPosn <= car.yPosn}
+
+            for (scroller in relevantScrollers) {
+                // Handle collision with Stars or Cirlces, accounting for tick rate
+                if(scroller is Objective  && scroller.yPosn > car.yPosn - tickRate) {
+                    if (scroller.lane != car.currentLane && scroller.isMandatory()) {
                         this.gameOver = true
                         return
                     }
-                    if (target.lane == car.currentLane){
-                        this.score += target.getReward()
+                    if (scroller.lane == car.currentLane){
+                        lane.remove(scroller)
+                        this.score += scroller.getReward()
+                    }
+                }
+                else {
+                    // Remove squares that are at the bottom edge of the screen.
+                    if(scroller.yPosn <= 0.0) {
+                        lane.remove(scroller)
                     }
                 }
             }
         }
+
+//        for(lane in this.lanes) {
+//            // At this point, it should only be stars or squares. Circles should be removed when
+//            for(item in lane.filter { it.yPosn <= 0.0}) {
+//                lane.remove(item)
+//            }
+//        }
     }
 
     override fun getScrollers(): List<List<Scroller>> {

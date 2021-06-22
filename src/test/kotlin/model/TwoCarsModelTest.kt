@@ -43,22 +43,40 @@ class TwoCarsModelTest {
         assert(simpleModel.getScrollers()[0][0].yPosn == 48.0)
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     fun handleCollisions() {
         resetModel()
         assert(simpleModel.getScrollers()[0][0].yPosn == 50.0)
         assert(simpleModel.getScrollers()[0][0].type == ScrollerType.CIRCLE)
         assert(simpleModel.getScore() == 0)
         simpleModel.switchLane("left")
-        for(i in 1..40) {
+        for(i in 1..39) {
             simpleModel.step()
         }
-        assert(simpleModel.getScrollers()[0][0].yPosn == 10.0)
+        assert(simpleModel.getScrollers()[0][0].yPosn == 11.0)
+        assert(simpleModel.getScore() == 0)
+        assert(simpleModel.getCarInfo().currentLane == 0)
+        simpleModel.step()
+        // Did collecting a circle increase the score?
         assert(simpleModel.getScore() == 1)
+        // Check that the collected circle was removed
+        assert(simpleModel.getScrollers()[0][0].type == ScrollerType.SQUARE)
+
+
+
+        // Test if items are being removed properly
+        resetModel()
+        for(i in 1..24) {
+            simpleModel.step()
+        }
+        assert(simpleModel.getScrollers()[1][0].type == ScrollerType.SQUARE)
+        assert(simpleModel.getScrollers()[1][0].yPosn == 1.0)
+        simpleModel.step()
+        assert(simpleModel.getScrollers()[1][0].type == ScrollerType.CIRCLE)
     }
 
 
-    @org.junit.jupiter.api.Test
+    @Test
     fun getCarInfo() {
         resetModel()
         val car = simpleModel.getCarInfo()
@@ -66,7 +84,7 @@ class TwoCarsModelTest {
         assert(car.yPosn == 10.0)
     }
 
-    @org.junit.jupiter.api.Test
+    @Test
     fun isGameOver() {
         resetModel()
         assert(simpleModel.getScrollers()[1][0].yPosn == 25.0)
