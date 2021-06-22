@@ -1,14 +1,16 @@
 package twoCars.model
 
 import twoCars.model.scroller.Scroller
+import twoCars.model.learn.Move
+
 
 interface TwoCarsModelInterface {
     /**
      * Switches the lane of the car towards the given side.
      *
-     * @param direction A string, either "left" or "right"
+     * @param direction Either the left, right, or stay enum value
      */
-    fun switchLane(direction: String)
+    fun switchLane(direction: Move)
 
     /**
      * Returns the current score.
@@ -16,6 +18,13 @@ interface TwoCarsModelInterface {
      * @return the current score of the game
      */
     fun getScore(): Int
+
+    /**
+     * Returns number of lanes in game.
+     *
+     * @return number of lanes
+     */
+    fun getNumLanes(): Int
 
     /**
      * Update scroller positions and handle collisions.

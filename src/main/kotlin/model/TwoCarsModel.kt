@@ -1,6 +1,7 @@
 package twoCars.model
 
 import twoCars.model.scroller.*
+import twoCars.model.learn.Move
 
 class TwoCarsModel : TwoCarsModelInterface {
 
@@ -111,12 +112,16 @@ class TwoCarsModel : TwoCarsModelInterface {
         this.car = Car(this.numLanes / 2, this.numLanes)
     }
 
-    override fun switchLane(direction: String) {
+    override fun switchLane(direction: Move) {
         this.car.switchLane(direction)
     }
 
     override fun getScore(): Int {
         return this.score
+    }
+
+    override fun getNumLanes(): Int {
+        return this.numLanes
     }
 
     /**
@@ -130,7 +135,6 @@ class TwoCarsModel : TwoCarsModelInterface {
         }
         handleCollisions()
         ++currentTick
-//        TODO("remove obstacles that are below the screen")
     }
 
     /**
@@ -170,13 +174,6 @@ class TwoCarsModel : TwoCarsModelInterface {
                 }
             }
         }
-
-//        for(lane in this.lanes) {
-//            // At this point, it should only be stars or squares. Circles should be removed when
-//            for(item in lane.filter { it.yPosn <= 0.0}) {
-//                lane.remove(item)
-//            }
-//        }
     }
 
     override fun getScrollers(): List<List<Scroller>> {

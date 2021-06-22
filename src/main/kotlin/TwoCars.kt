@@ -1,7 +1,7 @@
-
 package twoCars
 
 import twoCars.model.TwoCarsModel
+import twoCars.model.learn.Move
 
 
 fun main(args : Array<String>) {
@@ -9,7 +9,7 @@ fun main(args : Array<String>) {
     val simpleModel = TwoCarsModel("Circle 0 50, Square 0 100, Square 1 25, Circle 1 80, Star 2 50, Star 2 100")
 
     println(simpleModel.getCarInfo().currentLane)
-    simpleModel.switchLane("left")
+    simpleModel.switchLane(Move.LEFT)
     println(simpleModel.getCarInfo().currentLane)
 
     // Test colliding with a circle
