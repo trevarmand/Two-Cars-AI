@@ -2,6 +2,7 @@ package twoCars.view.agent
 
 import twoCars.model.learn.Move
 import twoCars.model.TwoCarsModelInterface
+import kotlin.math.abs
 
 /**
  * Different types of Q learning Agents
@@ -38,11 +39,12 @@ public class SimpleQLearningAgent : QLearningAgent {
         var lanes = model.getScrollers()
         for (lane in lanes) {
             for (scroller in lane) {
-                // closer objects are weighted more
-                var weight = 100 - scroller.getPosn()
+                // objects closer to car are weighted more
+                // theoretically object should always be above car here
+                var weight = (100 - abs(scroller.getPosn() - model.getCarInfo().yPosn)) / 100
                 var laneNum = scroller.getLaneNum()
                 var curUtil = utils[laneNum] ?: 0.0
-                utils.put(laneNum, curUtil + QLearningUtil.getScrollerVal(scroller.type))
+                utils.put(laneNum, curUtil + weight * QLearningUtil.getScrollerVal(scroller.type))
                 //utils[scroller.getLaneNum()] = utils[scroller.getLaneNum()] + QLearningUtil.getScrollerVal(scroller.type)
             }
         }
