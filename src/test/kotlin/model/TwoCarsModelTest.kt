@@ -57,7 +57,11 @@ class TwoCarsModelTest {
         assert(simpleModel.getScore() == 0)
         assert(simpleModel.getCarInfo().currentLane == 0)
         simpleModel.step()
+        // Did collecting a circle increase the score?
         assert(simpleModel.getScore() == 1)
+        simpleModel.step()
+        // Check that the collected circle was removed
+        assert(simpleModel.getScrollers()[0][0].type == ScrollerType.SQUARE)
     }
 
 
