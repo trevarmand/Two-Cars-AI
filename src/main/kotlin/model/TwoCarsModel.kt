@@ -135,7 +135,6 @@ class TwoCarsModel : TwoCarsModelInterface {
         }
         handleCollisions()
         ++currentTick
-//        TODO("remove obstacles that are below the screen")
     }
 
     /**
@@ -175,13 +174,6 @@ class TwoCarsModel : TwoCarsModelInterface {
                 }
             }
         }
-
-//        for(lane in this.lanes) {
-//            // At this point, it should only be stars or squares. Circles should be removed when
-//            for(item in lane.filter { it.yPosn <= 0.0}) {
-//                lane.remove(item)
-//            }
-//        }
     }
 
     override fun getScrollers(): List<List<Scroller>> {
