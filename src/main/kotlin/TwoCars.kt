@@ -13,12 +13,6 @@ fun main(args : Array<String>) {
     // TODO: allow user to specify learner via input parameter
     val learner = SimpleQLearningAgent(simpleModel)
 
-    //println(simpleModel.getCarInfo().currentLane)
-    //simpleModel.switchLane(Move.LEFT)
-    //println(simpleModel.getCarInfo().currentLane)
-
-    //print(simpleModel.getScore())
-
     // Test colliding with a circle
     // The score should keep incrementing; the circle still needs to be removed from the world after collection.
     for (i in 0..100) {
@@ -28,17 +22,7 @@ fun main(args : Array<String>) {
         var move = learner.getBestMove(simpleModel.getCarInfo().currentLane)
         println(simpleModel.getCarInfo().currentLane)
         simpleModel.switchLane(move)
-//        println(simpleModel.getScrollers()[0][0].yPosn)
-        /*
-        if (simpleModel.getCarInfo().yPosn == simpleModel.getScrollers()[0][0].yPosn) {
-            print("\n\nCOLLISION! ")
-            print(i)
-            print(" SCORE: ")
-            print(simpleModel.getScore())
-            return
-        }
 
-         */
         if (simpleModel.isGameOver()) {
             print("\n\nCOLLISION! ")
             print(i)

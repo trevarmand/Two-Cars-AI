@@ -9,7 +9,7 @@ import kotlin.math.abs
  */
 public class SimpleQLearningAgent : QLearningAgent {
 
-    private var iterations = 10 // TODO: make this configurable
+    private var iterations = 100 // TODO: make this configurable
     private var discountFactor = 0.8
 
     private val model : TwoCarsModelInterface
@@ -45,7 +45,6 @@ public class SimpleQLearningAgent : QLearningAgent {
                 var laneNum = scroller.getLaneNum()
                 var curUtil = utils[laneNum] ?: 0.0
                 utils.put(laneNum, curUtil + weight * QLearningUtil.getScrollerVal(scroller.type))
-                //utils[scroller.getLaneNum()] = utils[scroller.getLaneNum()] + QLearningUtil.getScrollerVal(scroller.type)
             }
         }
     }
@@ -58,10 +57,8 @@ public class SimpleQLearningAgent : QLearningAgent {
         // clear utilities from previous tick
         initUtils()
         for (i in 0..iterations) {
-            // believe the .. is inclusive
             for (j in 0..model.getNumLanes() - 1) {
                 var moveUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
-                //utils[j] = newUtil
                 var newUtil = maxOf(moveUtil, utils[j] ?: 0.0)
                 this.utils.put(j, newUtil)
             }
@@ -73,20 +70,14 @@ public class SimpleQLearningAgent : QLearningAgent {
         var rightUtil = utils[laneNum + 1] ?: 0.0
         var stayUtil = utils[laneNum] ?: 0.0
         //edge case: can't move left
-        /*
         if (laneNum == 0) {
             leftUtil = stayUtil
-        } else {
-            leftUtil = utils[laneNum - 1]
         }
 
         // edge case: can't move right
         if (laneNum == utils.size - 1) {
             rightUtil = stayUtil
-        } else {
-            rightUtil = utils[laneNum + 1]
         }
-         */
 
         // check for maximum
         var maxUtil = maxOf(leftUtil, rightUtil, stayUtil)
