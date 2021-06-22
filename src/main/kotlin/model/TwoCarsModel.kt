@@ -146,7 +146,8 @@ class TwoCarsModel : TwoCarsModelInterface {
     fun handleCollisions() {
 
         // First, are we hitting a square?
-        var squares = this.lanes[car.currentLane].filter { it.yPosn <= car.yPosn && it.type == ScrollerType.SQUARE}
+        // changing <= to == for testing purposes
+        var squares = this.lanes[car.currentLane].filter { it.yPosn == car.yPosn && it.type == ScrollerType.SQUARE}
         if (squares.isNotEmpty()) {
             gameOver = true
             return
@@ -154,7 +155,8 @@ class TwoCarsModel : TwoCarsModelInterface {
 
         // Are we missing a circle? Are we collecting a star or circle?
         for (lane in this.lanes) {
-            var targets = lane.filter { it.yPosn <= car.yPosn && it is Objective}
+            // changing <= to == for testing purposes
+            var targets = lane.filter { it.yPosn == car.yPosn && it is Objective}
             for (target in targets) {
                 // have to add this check - Kotlin isn't smart enough to smart cast based on filter
                 if(target is Objective) {
