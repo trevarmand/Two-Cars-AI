@@ -26,7 +26,6 @@ class SimpleMDPLearningAgentTest {
             simpleModel.step()
             learner.solve()
             var move = learner.getBestMove(simpleModel.getCarInfo().currentLane)
-            println(simpleModel.getCarInfo().currentLane)
             simpleModel.switchLane(move)
         }
 
