@@ -6,8 +6,8 @@ import twoCars.view.agent.SimpleMDPLearningAgent
 
 fun main(args : Array<String>) {
     // Describes a basic world: Shape lane yPosn, Shape lane yPosn....
-    val simpleModel = TwoCarsModel("Circle 0 50, Square 0 100, Square 1 25, Circle 1 80, Star 2 50, Star 2 100")
-    //val simpleModel = TwoCarsModel("Star 0 50, Star 0 100, Square 1 25, Circle 1 80, Circle 2 50, Square 2 100")
+    //val simpleModel = TwoCarsModel("Circle 0 50, Square 0 100, Square 1 25, Circle 1 80, Star 2 50, Star 2 100")
+    val simpleModel = TwoCarsModel("Star 0 50, Star 0 100, Square 1 25, Circle 1 80, Circle 2 50, Square 2 100")
 
     // learner: simple for now
     // should we be passing in copy of model? Can't see us mutating it at all here

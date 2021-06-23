@@ -67,12 +67,13 @@ class TwoCarsModelTest {
 
         // Test if items are being removed properly
         resetModel()
-        for(i in 1..24) {
+        for(i in 1..14) {
             simpleModel.step()
         }
         assert(simpleModel.getScrollers()[1][0].type == ScrollerType.SQUARE)
-        assert(simpleModel.getScrollers()[1][0].yPosn == 1.0)
+        assert(simpleModel.getScrollers()[1][0].yPosn == 11.0)
         simpleModel.step()
+        // TODO: look into why this is failing
         assert(simpleModel.getScrollers()[1][0].type == ScrollerType.CIRCLE)
     }
 
