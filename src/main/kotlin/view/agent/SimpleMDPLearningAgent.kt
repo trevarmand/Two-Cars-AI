@@ -42,8 +42,8 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
             for (scroller in lane) {
                 // objects closer to car are weighted more
                 // theoretically object should always be above car here
-                var weight = (1 + ((100 - abs(scroller.getPosn() - model.getCarInfo().yPosn)) / 100)).pow(1000)
-                var laneNum = scroller.getLaneNum()
+                var weight = (1 + ((100 - abs(scroller.yPosn - model.getCarInfo().yPosn)) / 100)).pow(1000)
+                var laneNum = scroller.lane
                 var curUtil = utils[laneNum] ?: 0.0
                 utils.put(laneNum, curUtil + weight * MDPLearningUtil.getScrollerVal(scroller.type))
             }
