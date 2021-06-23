@@ -22,9 +22,13 @@ class MDPLearningUtil {
 
         // TODO: move this function back to learner so we don't need to pass in utils?
         fun bestUtil(laneNum :Int, laneUtils :Map<Int, Double>): Double {
-            var leftUtil = laneUtils[laneNum - 1] ?: 0.0
-            var rightUtil = laneUtils[laneNum + 1] ?: 0.0
-            var stayUtil = laneUtils[laneNum] ?: 0.0
+            //var leftUtil = laneUtils[laneNum - 1] ?: 0.0
+            //var rightUtil = laneUtils[laneNum + 1] ?: 0.0
+            //var stayUtil = laneUtils[laneNum] ?: 0.0
+            // if utility doesn't exist at this point, should definitely not select it
+            var leftUtil = laneUtils[laneNum - 1] ?: -Double.MAX_VALUE
+            var rightUtil = laneUtils[laneNum + 1] ?: -Double.MAX_VALUE
+            var stayUtil = laneUtils[laneNum] ?: -Double.MAX_VALUE
 
             // check for maximum
             return maxOf(leftUtil, rightUtil, stayUtil)

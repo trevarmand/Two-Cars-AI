@@ -15,7 +15,7 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
 
     private val model : TwoCarsModelInterface
 
-    private val utils : MutableMap<Int, Double>
+    private var utils : MutableMap<Int, Double>
 
     /**
      * Constructor that takes in model
@@ -42,7 +42,8 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
             for (scroller in lane) {
                 // objects closer to car are weighted more
                 // theoretically object should always be above car here
-                var weight = (1 + ((100 - abs(scroller.yPosn - model.getCarInfo().yPosn)) / 100)).pow(1000)
+                //var weight = (1 + ((100 - abs(scroller.yPosn - model.getCarInfo().yPosn)) / 100)).pow(1000)
+                var weight = (1 + ((100 - abs(scroller.yPosn - model.getCarInfo().yPosn)) / 100)).pow(500)
                 var laneNum = scroller.lane
                 var curUtil = utils[laneNum] ?: 0.0
                 var scrollerVal = MDPLearningUtil.getScrollerVal(scroller.type)
@@ -63,18 +64,28 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
         // clear utilities from previous tick
         initUtils()
         for (i in 0..iterations) {
+            val newUtils = HashMap<Int, Double>()
             for (j in 0..model.getNumLanes() - 1) {
-                var moveUtil = discountFactor * MDPLearningUtil.bestUtil(j, utils)
-                var newUtil = maxOf(moveUtil, utils[j] ?: 0.0)
-                this.utils.put(j, newUtil)
+                // TODO: make fresh set of utils so we're not giving bias to newly-calculated ones
+                var discount = discountFactor
+                var bestUtil = MDPLearningUtil.bestUtil(j, utils)
+                if (bestUtil < 0.0) {
+                    discount = 1.2
+                }
+                //var moveUtil = discountFactor * MDPLearningUtil.bestUtil(j, utils)
+                var moveUtil = discount * bestUtil
+                var newUtil = maxOf(moveUtil, utils[j] ?: -Double.MAX_VALUE)
+                newUtils.put(j, newUtil)
             }
+
+            this.utils = newUtils
         }
     }
 
     override fun getBestMove(laneNum :Int) : Move {
-        var leftUtil = utils[laneNum - 1] ?: 0.0
-        var rightUtil = utils[laneNum + 1] ?: 0.0
-        var stayUtil = utils[laneNum] ?: 0.0
+        var leftUtil = utils[laneNum - 1] ?: -Double.MAX_VALUE
+        var rightUtil = utils[laneNum + 1] ?: -Double.MAX_VALUE
+        var stayUtil = utils[laneNum] ?: -Double.MAX_VALUE
 
         // check for maximum
         var maxUtil = maxOf(leftUtil, rightUtil, stayUtil)

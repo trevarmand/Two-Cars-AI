@@ -36,6 +36,8 @@ class SimpleMDPLearningAgentTest {
             simpleModel.switchLane(move)
         }
 
+        // game should not have "ended"
+        assertFalse { simpleSquareModel.isGameOver() }
         //max score
         assert(simpleModel.getScore() == 7)
         // should be no more scrollers
