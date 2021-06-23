@@ -169,10 +169,14 @@ class TwoCarsModel : TwoCarsModelInterface {
                 }
                 else {
                     // Remove squares that are at the bottom edge of the screen.
-                    if(scroller.yPosn <= 0.0) {
+                    if(scroller.yPosn <= car.yPosn) {
                         lane.remove(scroller)
                     }
                 }
+
+
+
+
             }
         }
 

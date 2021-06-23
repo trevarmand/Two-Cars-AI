@@ -3,6 +3,7 @@ package twoCars.view.agent
 import twoCars.model.learn.Move
 import twoCars.model.TwoCarsModelInterface
 import kotlin.math.abs
+import kotlin.math.pow
 
 /**
  * Different types of Q learning Agents
@@ -41,7 +42,9 @@ public class SimpleQLearningAgent : QLearningAgent {
             for (scroller in lane) {
                 // objects closer to car are weighted more
                 // theoretically object should always be above car here
-                var weight = (100 - abs(scroller.getPosn() - model.getCarInfo().yPosn)) / 100
+                var weight = (1 + ((100 - abs(scroller.getPosn() - model.getCarInfo().yPosn)) / 100)).pow(1000)
+                //var weight = 1 + ((100 - abs(scroller.getPosn() - model.getCarInfo().yPosn)) / 100)
+                //var weight = (100 - abs(scroller.getPosn() - model.getCarInfo().yPosn)) / 100
                 var laneNum = scroller.getLaneNum()
                 var curUtil = utils[laneNum] ?: 0.0
                 utils.put(laneNum, curUtil + weight * QLearningUtil.getScrollerVal(scroller.type))
@@ -90,7 +93,6 @@ public class SimpleQLearningAgent : QLearningAgent {
 
         // check for maximum
         var maxUtil = maxOf(leftUtil, rightUtil, stayUtil)
-        var maxMove = Move.LEFT
 
         // there's probably a cleaner and more efficient way to do this
         // this is tying highest utility value to corresponding move
