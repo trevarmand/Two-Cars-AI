@@ -8,15 +8,15 @@ import twoCars.model.scroller.*
 class MDPLearningUtil {
     companion object {
         // TODO: reconsider the weights we want to assign to these
-        fun getScrollerVal(type :ScrollerType) : Int{
+        fun getScrollerVal(type :ScrollerType) : Double{
             if (type == ScrollerType.SQUARE) {
-                return -10
+                return -10.0
             } else if (type == ScrollerType.CIRCLE) {
-                return 1
+                return 1.0
             } else if (type == ScrollerType.STAR) {
-                return 3
+                return 3.0
             } else {
-                return 0
+                return 0.0
             }
         }
 

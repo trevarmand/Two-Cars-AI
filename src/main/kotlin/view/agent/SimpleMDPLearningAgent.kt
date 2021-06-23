@@ -45,7 +45,12 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
                 var weight = (1 + ((100 - abs(scroller.yPosn - model.getCarInfo().yPosn)) / 100)).pow(1000)
                 var laneNum = scroller.lane
                 var curUtil = utils[laneNum] ?: 0.0
-                utils.put(laneNum, curUtil + weight * MDPLearningUtil.getScrollerVal(scroller.type))
+                var scrollerVal = MDPLearningUtil.getScrollerVal(scroller.type)
+                //weight.times()
+                var finUtil = curUtil + weight.times(scrollerVal)
+                //var finUtil = curUtil + weight * scrollerVal
+                utils[laneNum] = finUtil
+                //utils.put(laneNum, curUtil + weight * MDPLearningUtil.getScrollerVal(scroller.type))
             }
         }
     }
