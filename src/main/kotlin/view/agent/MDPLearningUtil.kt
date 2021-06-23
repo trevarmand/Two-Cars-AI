@@ -5,7 +5,7 @@ import twoCars.model.scroller.*
 /**
  * Helper functions pertaining to Q-Learning
  */
-class QLearningUtil {
+class MDPLearningUtil {
     companion object {
         // TODO: reconsider the weights we want to assign to these
         fun getScrollerVal(type :ScrollerType) : Int{
@@ -25,22 +25,6 @@ class QLearningUtil {
             var leftUtil = laneUtils[laneNum - 1] ?: 0.0
             var rightUtil = laneUtils[laneNum + 1] ?: 0.0
             var stayUtil = laneUtils[laneNum] ?: 0.0
-            //edge case: can't move left
-            /*
-            if (laneNum == 0) {
-                leftUtil = stayUtil
-            } else {
-                leftUtil = laneUtils[laneNum - 1]
-            }
-
-            // edge case: can't move right
-            if (laneNum == laneUtils.size - 1) {
-                rightUtil = stayUtil
-            } else {
-                rightUtil = laneUtils[laneNum + 1]
-            }
-
-             */
 
             // check for maximum
             return maxOf(leftUtil, rightUtil, stayUtil)

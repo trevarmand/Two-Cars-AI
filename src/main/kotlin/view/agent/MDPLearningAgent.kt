@@ -2,7 +2,7 @@ package twoCars.view.agent
 import twoCars.model.learn.Move
 
 
-interface QLearningAgent {
+interface MDPLearningAgent {
     /**
      * Step decision
      * Calls on the model to step, then reports its next best move

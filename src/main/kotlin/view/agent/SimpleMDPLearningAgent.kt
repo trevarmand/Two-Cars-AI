@@ -8,7 +8,7 @@ import kotlin.math.pow
 /**
  * Different types of Q learning Agents
  */
-public class SimpleQLearningAgent : QLearningAgent {
+public class SimpleMDPLearningAgent : MDPLearningAgent {
 
     private var iterations = 10 // TODO: make this configurable
     private var discountFactor = 0.8
@@ -43,12 +43,9 @@ public class SimpleQLearningAgent : QLearningAgent {
                 // objects closer to car are weighted more
                 // theoretically object should always be above car here
                 var weight = (1 + ((100 - abs(scroller.getPosn() - model.getCarInfo().yPosn)) / 100)).pow(1000)
-                //var weight = 1 + ((100 - abs(scroller.getPosn() - model.getCarInfo().yPosn)) / 100)
-                //var weight = (100 - abs(scroller.getPosn() - model.getCarInfo().yPosn)) / 100
                 var laneNum = scroller.getLaneNum()
                 var curUtil = utils[laneNum] ?: 0.0
-                utils.put(laneNum, curUtil + weight * QLearningUtil.getScrollerVal(scroller.type))
-                //utils[scroller.getLaneNum()] = utils[scroller.getLaneNum()] + QLearningUtil.getScrollerVal(scroller.type)
+                utils.put(laneNum, curUtil + weight * MDPLearningUtil.getScrollerVal(scroller.type))
             }
         }
     }
@@ -61,10 +58,8 @@ public class SimpleQLearningAgent : QLearningAgent {
         // clear utilities from previous tick
         initUtils()
         for (i in 0..iterations) {
-            // believe the .. is inclusive
             for (j in 0..model.getNumLanes() - 1) {
-                var moveUtil = discountFactor * QLearningUtil.bestUtil(j, utils)
-                //utils[j] = newUtil
+                var moveUtil = discountFactor * MDPLearningUtil.bestUtil(j, utils)
                 var newUtil = maxOf(moveUtil, utils[j] ?: 0.0)
                 this.utils.put(j, newUtil)
             }
@@ -75,21 +70,6 @@ public class SimpleQLearningAgent : QLearningAgent {
         var leftUtil = utils[laneNum - 1] ?: 0.0
         var rightUtil = utils[laneNum + 1] ?: 0.0
         var stayUtil = utils[laneNum] ?: 0.0
-        //edge case: can't move left
-        /*
-        if (laneNum == 0) {
-            leftUtil = stayUtil
-        } else {
-            leftUtil = utils[laneNum - 1]
-        }
-
-        // edge case: can't move right
-        if (laneNum == utils.size - 1) {
-            rightUtil = stayUtil
-        } else {
-            rightUtil = utils[laneNum + 1]
-        }
-         */
 
         // check for maximum
         var maxUtil = maxOf(leftUtil, rightUtil, stayUtil)
