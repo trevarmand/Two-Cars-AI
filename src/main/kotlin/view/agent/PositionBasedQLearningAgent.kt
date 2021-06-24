@@ -196,8 +196,19 @@ class PositionBasedQLearningAgent() {
                             val bestFutureMoveValue = getAdjacentQValues(newLane, curStep + 1).maxOrNull()!!
                             val existingVal = qValues[carLane]!![carEffectiveY]!![move] ?: 0.0
                             val curUtility = utilities[carLane][carEffectiveY] ?: 0.0
+                            // It seems like bestFutureMove value should actually be bestMoveValue
+                            // Discount * q of where we end up) - q of where we just were
+                            // Might need to do something special when the utility of the target square is non-zero
+                            // EG if we are about to collect, the discounted value will be negative bc bestMoveValue reflects moving to collect
+
+                            // Don't update q-values of scrollers
+                            if (curUtility != 0.0 && qValues[carLane]!![carEffectiveY]!![move] != 0.0) {
+                                break
+                            }
+
+
                             var newDiscountedVal =
-                                LEARNING_RATE * (curUtility + (DISCOUNT_RATE * bestFutureMoveValue) - bestMoveValue)
+                                LEARNING_RATE * (curUtility + (DISCOUNT_RATE * bestFutureMoveValue) - existingVal)
                             qValues[carLane]!![carEffectiveY]!![move] = existingVal + newDiscountedVal
                             model.switchLane(move)
 
