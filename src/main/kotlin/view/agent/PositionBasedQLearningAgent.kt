@@ -28,13 +28,13 @@ class PositionBasedQLearningAgent() {
     /**
      * Influences how much new discoveries matter as opposed to existing information.
      */
-    private val LEARNING_RATE = 0.01
+    private val LEARNING_RATE = 0.2
     private val DISCOUNT_RATE = 0.8
 
     /**
      * Describes the utility of different scrollers, for use by the learner.
      */
-    private val SCROLLER_UTILITIES = mapOf(ScrollerType.STAR to 1.0, ScrollerType.CIRCLE to 3.0, ScrollerType.SQUARE to -5.0)
+    private val SCROLLER_UTILITIES = mapOf(ScrollerType.STAR to 10.0, ScrollerType.CIRCLE to 30.0, ScrollerType.SQUARE to -50.0)
 
     private var model : TwoCarsModelInterface
     // lane -> y position -> move (order: left, right, straight) -> q value
@@ -43,7 +43,7 @@ class PositionBasedQLearningAgent() {
     private var policy: MutableMap<Int, MutableMap<Double, Move>>
 
     init {
-        this.model = TwoCarsModel("Circle 0 20, Square 1 30, Circle 1 40, Square 1 50")
+        this.model = TwoCarsModel("Circle 0 80, Circle 1 20, Circle 1 30, Square 1 40")
         this.qValues = hashMapOf<Int, MutableMap<Double, MutableMap<Move, Double>>>()
         this.policy = hashMapOf<Int, MutableMap<Double, Move>>()
         for(lane in 0..model.getNumLanes()) {
@@ -62,19 +62,23 @@ class PositionBasedQLearningAgent() {
         // Initializes Q values for all moves at the position where collected
         // This may be wrong - might need to initialize q values not in-place:
         //      for example staying when you are below a reward, not for when you are actively positioned on the reward
-        for(laneNo in scrollers.indices) {
-            for(scroller in scrollers[laneNo]) {
-                for(move in Move.values()) {
-                    when (scroller.type) {
-                        ScrollerType.CIRCLE -> this.qValues[laneNo]!![scroller.yPosn - 1]!![move] = 100.0
-                        ScrollerType.SQUARE -> this.qValues[laneNo]!![scroller.yPosn - 1]!![move] = -100.0
-                        ScrollerType.STAR -> this.qValues[laneNo]!![scroller.yPosn - 1]!![move] = 20.0
-                    }
-                }
-            }
-        }
+//        for(laneNo in scrollers.indices) {
+//            for(scroller in scrollers[laneNo]) {
+//                for(move in Move.values()) {
+//                    when (scroller.type) {
+//                        ScrollerType.CIRCLE -> this.qValues[laneNo]!![scroller.yPosn]!![move] = 100.0
+//                        ScrollerType.SQUARE -> this.qValues[laneNo]!![scroller.yPosn]!![move] = -100.0
+//                        ScrollerType.STAR -> this.qValues[laneNo]!![scroller.yPosn]!![move] = 20.0
+//                    }
+//                }
+//            }
+//        }
         print("DONE")
 
+    }
+
+    fun resetModel() {
+        this.model = TwoCarsModel("Circle 0 80, Circle 1 20, Circle 1 30, Square 1 40")
     }
 
     /**
@@ -112,7 +116,8 @@ class PositionBasedQLearningAgent() {
 
         for(lane in model.getScrollers()) {
             for(scroller in lane) {
-                ret[scroller.lane][scroller.yPosn] = SCROLLER_UTILITIES[scroller.type]!!
+                // Because we have to move, then step, the real utility of a scroller is placed one y-posn before it.
+                ret[scroller.lane][scroller.yPosn - 1] = SCROLLER_UTILITIES[scroller.type]!!
             }
         }
 
@@ -121,60 +126,92 @@ class PositionBasedQLearningAgent() {
 
     fun qSolve(iterations : Int) {
 
+        val utilities = makeUtilityMap(model)
+
         for(i in 0 until iterations) {
-            val utilities = makeUtilityMap(model)
             var curStep = 0
+            resetModel()
             while (!model.isGameOver()) {
 
 
-                var car = model.getCarInfo()
+                val car = model.getCarInfo()
                 val carLane = car.currentLane
-                var moveQValues = getAdjacentQValues(carLane, curStep)
-                var bestMoveValue = maxOf(moveQValues[0], moveQValues[1], moveQValues[2])
+                // We can pretend that as time progresses, the car is moving up the map.
+                val carEffectiveY = car.yPosn + curStep
 
-                var eGreedyTrigger = Random.nextInt(0, 100)
+                // Returns values if we were to make a move, then step.
+                val moveQValues = getAdjacentQValues(carLane, curStep)
+                val bestMoveValue = maxOf(moveQValues[0], moveQValues[1], moveQValues[2])
 
-                // If e-greedy has decided we should make a random move:
-                if(eGreedyTrigger < RANDOM_MOVE_CHANGE) {
-                    // TODO -> Can 0..3 return 3? Or just 2? Remove error eventually.
-                    // Move follows the same indexes described in the state:
-                    // 0 left, 1 right, 2 stay
-                    var moveIdx = Random.nextInt(0, 3)
-                    if(moveIdx == 3) {
-                        error("FOUND MOVE OF 3 INDEX ISSUE")
-                    }
+                val eGreedyTrigger = Random.nextInt(0, 100)
 
-                    // If on the left lane moving left, or on the right lane moving right, do nothing.
-                    if((carLane == 0 && moveIdx == 0) ||
-                        (carLane == model.getNumLanes() - 1 && moveIdx == 1)) {
-                        continue
-                    }
-                    else {
-                        var newLane = carLane
+//                // If e-greedy has decided we should make a random move:
+//                if(eGreedyTrigger < RANDOM_MOVE_CHANGE) {
+//                    // TODO -> Can 0..3 return 3? Or just 2? Remove error eventually.
+//                    // Move follows the same indexes described in the state:
+//                    // 0 left, 1 right, 2 stay
+//                    var moveIdx = Random.nextInt(0, 3)
+//                    if(moveIdx == 3) {
+//                        error("FOUND MOVE OF 3 INDEX ISSUE")
+//                    }
+//                    val move = getMoveByIdx(moveIdx)
+//
+//                    // If on the left lane moving left, or on the right lane moving right, do nothing.
+//                    if((carLane == 0 && move == Move.LEFT) ||
+//                        (carLane == model.getNumLanes() - 1 && moveIdx == 1)) {
+//                        model.step()
+//                        curStep++
+//                        continue
+//                    }
+//                    else {
+//                        var newLane = carLane
+//
+//                        // Determine what lane we'll end up in based on this move.
+//                        newLane = when(move) {
+//                            Move.STAY -> carLane
+//                            Move.RIGHT -> carLane + 1
+//                            Move.LEFT -> carLane - 1
+//                        }
+//
+//                        val bestFutureMoveValue = getAdjacentQValues(newLane, curStep + 1).maxOrNull()!!
+//                        val existingVal = qValues[carLane]!![carEffectiveY]!![move] ?: 0.0
+//                        val curUtility = utilities[carLane][car.yPosn] ?: 0.0
+//                        var newDiscountedVal = LEARNING_RATE * (curUtility + (DISCOUNT_RATE * bestFutureMoveValue) - bestMoveValue)
+//                        qValues[carLane]!![carEffectiveY]!![move] = existingVal + newDiscountedVal
+//                        model.switchLane(move)
+//                    }
+//                }
 
-                        // Determine what lane we'll end up in based on this move.
-                        newLane = when(getMoveByIdx(moveIdx)) {
-                            Move.STAY -> carLane
-                            Move.RIGHT -> carLane + 1
-                            Move.LEFT -> carLane - 1
+//                else {
+                    for (move in listOf(Move.STAY, Move.LEFT, Move.RIGHT)) {
+                        if (qValues[carLane]!![carEffectiveY + 1]!![move] == bestMoveValue) {
+                            var newLane = carLane
+                            newLane = when(move) {
+                                Move.STAY -> carLane
+                                Move.RIGHT -> carLane + 1
+                                Move.LEFT -> carLane - 1
+                            }
+
+                            // What is the best move after changing lanes and stepping once?
+                            val bestFutureMoveValue = getAdjacentQValues(newLane, curStep + 1).maxOrNull()!!
+                            val existingVal = qValues[carLane]!![carEffectiveY]!![move] ?: 0.0
+                            val curUtility = utilities[carLane][carEffectiveY] ?: 0.0
+                            var newDiscountedVal =
+                                LEARNING_RATE * (curUtility + (DISCOUNT_RATE * bestFutureMoveValue) - bestMoveValue)
+                            qValues[carLane]!![carEffectiveY]!![move] = existingVal + newDiscountedVal
+                            model.switchLane(move)
+
+                            // We prefer to stay over doing anything else, if multiple moves yield the same y value.
+                            if(move == Move.STAY) {
+                                break
+                            }
                         }
-
-                        val bestFutureMoveValue = getAdjacentQValues(carLane, curStep + 1).maxOrNull()!!
-                        val existingVal = qValues[carLane]!![car.yPosn + curStep]!![getMoveByIdx(moveIdx)] ?: 0.0
-                        val curUtility = utilities[carLane][car.yPosn] ?: 0.0
-                        var newDiscountedVal = LEARNING_RATE * (curUtility + (DISCOUNT_RATE * bestFutureMoveValue) - bestMoveValue)
-                        qValues[carLane]!![car.yPosn + curStep]!![getMoveByIdx(moveIdx)] = existingVal + newDiscountedVal
                     }
-                }
-
-                else {
-
-                }
+//                }
 
 
                 model.step()
                 curStep++
-                print("YO")
             }
         }
         print("DONE")
