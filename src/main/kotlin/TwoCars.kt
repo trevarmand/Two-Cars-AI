@@ -3,7 +3,9 @@ package twoCars
 import twoCars.model.TwoCarsModel
 import twoCars.view.agent.SimpleMDPLearningAgent
 
-
+// entry point of program
+// kind of obsolete, because now running through tests
+// TODO: figure out what we want to put here
 fun main(args : Array<String>) {
     // Describes a basic world: Shape lane yPosn, Shape lane yPosn....
     //val simpleModel = TwoCarsModel("Circle 0 50, Square 0 100, Square 1 25, Circle 1 80, Star 2 50, Star 2 100")
@@ -11,7 +13,6 @@ fun main(args : Array<String>) {
 
     // learner: simple for now
     // should we be passing in copy of model? Can't see us mutating it at all here
-    // TODO: allow user to specify learner via input parameter
     val learner = SimpleMDPLearningAgent(simpleModel)
 
     // Test colliding with a circle

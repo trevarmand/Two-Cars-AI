@@ -12,6 +12,7 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
 
     private var iterations = 10 // TODO: make this configurable
     private var discountFactor = 0.8
+    private var negDiscountFactor = 1.2
 
     private val model : TwoCarsModelInterface
 
@@ -44,17 +45,13 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
             for (scroller in lane) {
                 // objects closer to car are weighted more
                 // theoretically object should always be above car here
-                //var weight = (1 + ((100 - abs(scroller.yPosn - model.getCarInfo().yPosn)) / 100)).pow(1000)
                 var weight = (1 + ((100 - abs(scroller.yPosn - model.getCarInfo().yPosn)) / 100)).pow(100)
                 var laneNum = scroller.lane
                 var curUtil = utils[laneNum] ?: 0.0
                 var scrollerVal = MDPLearningUtil.getScrollerVal(scroller.type)
-                //weight.times()
                 var finUtil = curUtil + weight.times(scrollerVal)
-                //var finUtil = curUtil + weight * scrollerVal
                 utils[laneNum] = finUtil
                 rewards[laneNum] = finUtil
-                //utils.put(laneNum, curUtil + weight * MDPLearningUtil.getScrollerVal(scroller.type))
             }
         }
     }
@@ -72,12 +69,11 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
                 var discount = discountFactor
                 var bestUtil = MDPLearningUtil.bestUtil(j, utils)
                 if (bestUtil < 0.0) {
-                    discount = 1.2
+                    // should be making negative utilities more negative
+                    discount = negDiscountFactor
                 }
-                //var moveUtil = discountFactor * MDPLearningUtil.bestUtil(j, utils)
                 var moveUtil = discount * bestUtil
                 var newUtil = rewards[j] ?: -Double.MAX_VALUE + maxOf(moveUtil, utils[j] ?: -Double.MAX_VALUE)
-                //var newUtil = utils[j] ?: -Double.MAX_VALUE + moveUtil
                 newUtils.put(j, newUtil)
             }
 

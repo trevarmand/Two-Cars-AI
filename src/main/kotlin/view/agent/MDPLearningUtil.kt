@@ -7,7 +7,8 @@ import twoCars.model.scroller.*
  */
 class MDPLearningUtil {
     companion object {
-        // TODO: reconsider the weights we want to assign to these
+        // TODO: reconsider the weights we want to assign to these; for example would need to consider if scroller
+        //  is mandatory
         fun getScrollerVal(type :ScrollerType) : Double{
             if (type == ScrollerType.SQUARE) {
                 return -10.0
@@ -22,9 +23,6 @@ class MDPLearningUtil {
 
         // TODO: move this function back to learner so we don't need to pass in utils?
         fun bestUtil(laneNum :Int, laneUtils :Map<Int, Double>): Double {
-            //var leftUtil = laneUtils[laneNum - 1] ?: 0.0
-            //var rightUtil = laneUtils[laneNum + 1] ?: 0.0
-            //var stayUtil = laneUtils[laneNum] ?: 0.0
             // if utility doesn't exist at this point, should definitely not select it
             var leftUtil = laneUtils[laneNum - 1] ?: -Double.MAX_VALUE
             var rightUtil = laneUtils[laneNum + 1] ?: -Double.MAX_VALUE

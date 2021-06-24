@@ -33,7 +33,6 @@ class SimpleMDPLearningAgentTest {
             simpleModel.step()
             learner.solve()
             var move = learner.getBestMove(simpleModel.getCarInfo().currentLane)
-            println(simpleModel.getCarInfo().currentLane)
             simpleModel.switchLane(move)
         }
 
@@ -52,25 +51,10 @@ class SimpleMDPLearningAgentTest {
     fun avoidSquares() {
         resetModel()
         for (i in 0..100) {
-            if (i != 35) {
-                simpleSquareModel.step()
-                squareLearner.solve()
-                var move = squareLearner.getBestMove(simpleSquareModel.getCarInfo().currentLane)
-                println(simpleSquareModel.getCarInfo().currentLane)
-                simpleSquareModel.switchLane(move)
-            } else {
-                simpleSquareModel.step()
-                squareLearner.solve()
-                var move = squareLearner.getBestMove(simpleSquareModel.getCarInfo().currentLane)
-                println(simpleSquareModel.getCarInfo().currentLane)
-                simpleSquareModel.switchLane(move)
-            }
-            /*
-            if (simpleSquareModel.isGameOver()) {
-                println("Bug")
-            }
-
-             */
+            simpleSquareModel.step()
+            squareLearner.solve()
+            var move = squareLearner.getBestMove(simpleSquareModel.getCarInfo().currentLane)
+            simpleSquareModel.switchLane(move)
         }
 
         //game should not have "ended"
