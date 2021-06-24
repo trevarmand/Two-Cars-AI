@@ -57,6 +57,7 @@ class TwoCarsModel : TwoCarsModelInterface {
     }
 
     override fun reset() {
+        this.gameOver = false
         this.score = 0
         this.currentTick = 0
         this.tickRate = 1.0

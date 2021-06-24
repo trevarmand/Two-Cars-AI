@@ -57,10 +57,6 @@ class PositionBasedQLearningAgent {
         val scrollers = model.getScrollers()
     }
 
-    fun resetModel() {
-        this.model = TwoCarsModel("Circle 0 15, Circle 1 20, Circle 1 30, Square 1 40")
-    }
-
     /**
      * Displays the world to the console.
      * This only works for tick rates that are whole numbers.
@@ -156,7 +152,7 @@ class PositionBasedQLearningAgent {
 
         for(i in 0 until iterations) {
             var curStep = 0
-            resetModel()
+            this.model.reset()
             while (!model.isGameOver() && curStep <= HEIGHT) {
 
 
