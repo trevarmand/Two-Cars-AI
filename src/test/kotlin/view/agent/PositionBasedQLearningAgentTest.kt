@@ -16,6 +16,6 @@ internal class PositionBasedQLearningAgentTest {
     @Test
     fun qSolve() {
         var learner = PositionBasedQLearningAgent()
-        learner.qSolve(100)
+        learner.qSolve(100000)
     }
 }

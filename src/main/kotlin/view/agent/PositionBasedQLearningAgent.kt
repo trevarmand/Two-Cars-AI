@@ -28,7 +28,7 @@ class PositionBasedQLearningAgent() {
     /**
      * Influences how much new discoveries matter as opposed to existing information.
      */
-    private val LEARNING_RATE = 0.2
+    private val LEARNING_RATE = 0.01
     private val DISCOUNT_RATE = 0.8
 
     /**
@@ -40,15 +40,12 @@ class PositionBasedQLearningAgent() {
     // lane -> y position -> move (order: left, right, straight) -> q value
     //
     private var qValues : MutableMap<Int, MutableMap<Double, MutableMap<Move, Double>>>
-    private var policy: MutableMap<Int, MutableMap<Double, Move>>
 
     init {
-        this.model = TwoCarsModel("Circle 0 10, Circle 1 20, Circle 1 30, Square 1 40")
+        this.model = TwoCarsModel("Circle 0 15, Circle 1 20, Circle 1 30, Square 1 40")
         this.qValues = hashMapOf<Int, MutableMap<Double, MutableMap<Move, Double>>>()
-        this.policy = hashMapOf<Int, MutableMap<Double, Move>>()
-        for(lane in 0..model.getNumLanes()) {
+        for(lane in 0 until model.getNumLanes()) {
             this.qValues[lane] = hashMapOf<Double, MutableMap<Move, Double>>()
-            this.policy[lane] = hashMapOf<Double, Move>()
             for(y in 0..STEPS + 10) {
                 this.qValues[lane]!![y.toDouble()] = EnumMap(twoCars.model.learn.Move::class.java)
                 for(move in Move.values()) {
@@ -78,7 +75,7 @@ class PositionBasedQLearningAgent() {
     }
 
     fun resetModel() {
-        this.model = TwoCarsModel("Circle 0 10, Circle 1 20, Circle 1 30, Square 1 40")
+        this.model = TwoCarsModel("Circle 0 15, Circle 1 20, Circle 1 30, Square 1 40")
     }
 
     /**
@@ -176,7 +173,12 @@ class PositionBasedQLearningAgent() {
                         }
 
                         // Don't update q-values of scrollers
-                        if (curUtility != 0.0 && qValues[carLane]!![carEffectiveY]!![move] != 0.0) {
+                        // If we find a utility (scroller) here, then we need to set stay and continue.
+                        // TODO revist and validate
+                        if (curUtility != 0.0 && qValues[carLane]!![carEffectiveY]!![Move.STAY] != curUtility) {
+                            qValues[carLane]!![carEffectiveY]!![Move.STAY] = curUtility
+                            break
+                        } else if (curUtility != 0.0) {
                             break
                         }
 
@@ -207,7 +209,10 @@ class PositionBasedQLearningAgent() {
                             // EG if we are about to collect, the discounted value will be negative bc bestMoveValue reflects moving to collect
 
                             // Don't update q-values of scrollers
-                            if (curUtility != 0.0 && qValues[carLane]!![carEffectiveY]!![move] != 0.0) {
+                            if (curUtility != 0.0 && qValues[carLane]!![carEffectiveY]!![Move.STAY] != curUtility) {
+                                qValues[carLane]!![carEffectiveY]!![Move.STAY] = curUtility
+                                break
+                            } else if (curUtility != 0.0) {
                                 break
                             }
 
