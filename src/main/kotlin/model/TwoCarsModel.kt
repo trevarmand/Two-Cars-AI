@@ -12,7 +12,7 @@ class TwoCarsModel : TwoCarsModelInterface {
     private var currentTick : Int
 
     // The car!
-    private val car : Car
+    private var car : Car
 
     /**
      * The tick rate specifies how fast the obstacles are moving down the screen.
@@ -31,45 +31,11 @@ class TwoCarsModel : TwoCarsModelInterface {
     /**
      * A set of lists representing lanes, each occupied by a set of Scrollers.
      */
-    private val lanes: MutableList<MutableList<Scroller>>
+    private var lanes: MutableList<MutableList<Scroller>>
+
+    private val stringRepresentation : String
 
     private var gameOver = false
-
-    /**
-     * A basic constructor.
-     */
-    constructor() {
-        this.score = 0
-        this.currentTick = 0
-        this.tickRate = 1.0
-        this.numLanes = 3
-        this.lanes = arrayListOf<MutableList<Scroller>>()
-        this.car = Car(1, numLanes)
-    }
-
-    /**
-     * Start with a custom tickrate
-     */
-    constructor(tickRate: Double) {
-        this.score = 0
-        this.currentTick = 0
-        this.numLanes = 3
-        this.tickRate = tickRate
-        this.lanes = arrayListOf<MutableList<Scroller>>()
-        this.car = Car(1, numLanes)
-    }
-
-    /**
-     * Start with a unique number of lanes
-     */
-    constructor(numLanes: Int) {
-        this.score = 0
-        this.currentTick = 0
-        this.tickRate = 1.0
-        this.numLanes = numLanes
-        this.lanes = arrayListOf<MutableList<Scroller>>()
-        this.car = Car(numLanes / 2, numLanes)
-    }
 
     /**
      * Allows for loading a static model representation.
@@ -84,7 +50,20 @@ class TwoCarsModel : TwoCarsModelInterface {
         this.tickRate = 1.0
         this.numLanes = 0
         this.lanes = arrayListOf<MutableList<Scroller>>()
-        var objects = stringRepresentation.split(",")
+        this.car = Car(this.numLanes / 2, this.numLanes)
+        this.stringRepresentation = stringRepresentation
+        reset()
+    }
+
+    override fun reset() {
+        this.gameOver = false
+        this.score = 0
+        this.currentTick = 0
+        this.tickRate = 1.0
+        this.numLanes = 0
+        this.lanes = arrayListOf<MutableList<Scroller>>()
+        this.car = Car(this.numLanes / 2, this.numLanes)
+        var objects = this.stringRepresentation.split(",")
         for(obj in objects) {
             var details = obj.trim().split(" ")
             var type = details[0]
@@ -109,7 +88,6 @@ class TwoCarsModel : TwoCarsModelInterface {
                 this.lanes[lane].add(newStar)
             }
         }
-        this.car = Car(this.numLanes / 2, this.numLanes)
     }
 
     override fun switchLane(direction: Move) {
