@@ -17,13 +17,13 @@ class PositionBasedQLearningAgent() {
     /**
      * How many times to tick until we stop playing.
      */
-    private val STEPS = 50
+    private val STEPS = 70
 
     /**
      * This is the epsilon-greedy probability of exploration.
      * Percentages expressed as whole numbers: 20% = 20
      */
-    private val RANDOM_MOVE_CHANGE = 70
+    private val RANDOM_MOVE_CHANGE = 30
 
     /**
      * Influences how much new discoveries matter as opposed to existing information.
@@ -43,13 +43,13 @@ class PositionBasedQLearningAgent() {
     private var policy: MutableMap<Int, MutableMap<Double, Move>>
 
     init {
-        this.model = TwoCarsModel("Circle 0 80, Circle 1 20, Circle 1 30, Square 1 40")
+        this.model = TwoCarsModel("Circle 0 10, Circle 1 20, Circle 1 30, Square 1 40")
         this.qValues = hashMapOf<Int, MutableMap<Double, MutableMap<Move, Double>>>()
         this.policy = hashMapOf<Int, MutableMap<Double, Move>>()
         for(lane in 0..model.getNumLanes()) {
             this.qValues[lane] = hashMapOf<Double, MutableMap<Move, Double>>()
             this.policy[lane] = hashMapOf<Double, Move>()
-            for(y in 0..STEPS) {
+            for(y in 0..STEPS + 10) {
                 this.qValues[lane]!![y.toDouble()] = EnumMap(twoCars.model.learn.Move::class.java)
                 for(move in Move.values()) {
                     this.qValues[lane]!![y.toDouble()]!![move] = 0.0
@@ -78,7 +78,7 @@ class PositionBasedQLearningAgent() {
     }
 
     fun resetModel() {
-        this.model = TwoCarsModel("Circle 0 80, Circle 1 20, Circle 1 30, Square 1 40")
+        this.model = TwoCarsModel("Circle 0 10, Circle 1 20, Circle 1 30, Square 1 40")
     }
 
     /**
@@ -131,7 +131,7 @@ class PositionBasedQLearningAgent() {
         for(i in 0 until iterations) {
             var curStep = 0
             resetModel()
-            while (!model.isGameOver()) {
+            while (!model.isGameOver() && curStep <= STEPS) {
 
 
                 val car = model.getCarInfo()
@@ -144,47 +144,53 @@ class PositionBasedQLearningAgent() {
                 val bestMoveValue = maxOf(moveQValues[0], moveQValues[1], moveQValues[2])
 
                 val eGreedyTrigger = Random.nextInt(0, 100)
+                val curUtility = utilities[carLane][carEffectiveY] ?: 0.0
 
-//                // If e-greedy has decided we should make a random move:
-//                if(eGreedyTrigger < RANDOM_MOVE_CHANGE) {
-//                    // TODO -> Can 0..3 return 3? Or just 2? Remove error eventually.
-//                    // Move follows the same indexes described in the state:
-//                    // 0 left, 1 right, 2 stay
-//                    var moveIdx = Random.nextInt(0, 3)
-//                    if(moveIdx == 3) {
-//                        error("FOUND MOVE OF 3 INDEX ISSUE")
-//                    }
-//                    val move = getMoveByIdx(moveIdx)
-//
-//                    // If on the left lane moving left, or on the right lane moving right, do nothing.
-//                    if((carLane == 0 && move == Move.LEFT) ||
-//                        (carLane == model.getNumLanes() - 1 && moveIdx == 1)) {
-//                        model.step()
-//                        curStep++
-//                        continue
-//                    }
-//                    else {
-//                        var newLane = carLane
-//
-//                        // Determine what lane we'll end up in based on this move.
-//                        newLane = when(move) {
-//                            Move.STAY -> carLane
-//                            Move.RIGHT -> carLane + 1
-//                            Move.LEFT -> carLane - 1
-//                        }
-//
-//                        val bestFutureMoveValue = getAdjacentQValues(newLane, curStep + 1).maxOrNull()!!
-//                        val existingVal = qValues[carLane]!![carEffectiveY]!![move] ?: 0.0
-//                        val curUtility = utilities[carLane][car.yPosn] ?: 0.0
-//                        var newDiscountedVal = LEARNING_RATE * (curUtility + (DISCOUNT_RATE * bestFutureMoveValue) - bestMoveValue)
-//                        qValues[carLane]!![carEffectiveY]!![move] = existingVal + newDiscountedVal
-//                        model.switchLane(move)
-//                    }
-//                }
 
-//                else {
+                // If e-greedy has decided we should make a random move:
+                if(eGreedyTrigger < RANDOM_MOVE_CHANGE) {
+                    // TODO -> Can 0..3 return 3? Or just 2? Remove error eventually.
+                    // Move follows the same indexes described in the state:
+                    // 0 left, 1 right, 2 stay
+                    var moveIdx = Random.nextInt(0, 3)
+                    if(moveIdx == 3) {
+                        error("FOUND MOVE OF 3 INDEX ISSUE")
+                    }
+                    val move = getMoveByIdx(moveIdx)
+
+                    // If on the left lane moving left, or on the right lane moving right, do nothing.
+                    if((carLane == 0 && move == Move.LEFT) ||
+                        (carLane == model.getNumLanes() - 1 && moveIdx == 1)) {
+                        model.step()
+                        curStep++
+                        continue
+                    }
+                    else {
+                        var newLane: Int
+
+                        // Determine what lane we'll end up in based on this move.
+                        newLane = when(move) {
+                            Move.STAY -> carLane
+                            Move.RIGHT -> carLane + 1
+                            Move.LEFT -> carLane - 1
+                        }
+
+                        // Don't update q-values of scrollers
+                        if (curUtility != 0.0 && qValues[carLane]!![carEffectiveY]!![move] != 0.0) {
+                            break
+                        }
+
+                        val bestFutureMoveValue = getAdjacentQValues(newLane, curStep + 1).maxOrNull()!!
+                        val existingVal = qValues[carLane]!![carEffectiveY]!![move] ?: 0.0
+                        var newDiscountedVal = LEARNING_RATE * (curUtility + (DISCOUNT_RATE * bestFutureMoveValue) - bestMoveValue)
+                        qValues[carLane]!![carEffectiveY]!![move] = existingVal + newDiscountedVal
+                        model.switchLane(move)
+                    }
+                }
+
+                else {
                     for (move in listOf(Move.STAY, Move.LEFT, Move.RIGHT)) {
-                        if (qValues[carLane]!![carEffectiveY + 1]!![move] == bestMoveValue) {
+                        if (qValues[carLane]!![carEffectiveY]!![move] == bestMoveValue) {
                             var newLane = carLane
                             newLane = when(move) {
                                 Move.STAY -> carLane
@@ -195,7 +201,6 @@ class PositionBasedQLearningAgent() {
                             // What is the best move after changing lanes and stepping once?
                             val bestFutureMoveValue = getAdjacentQValues(newLane, curStep + 1).maxOrNull()!!
                             val existingVal = qValues[carLane]!![carEffectiveY]!![move] ?: 0.0
-                            val curUtility = utilities[carLane][carEffectiveY] ?: 0.0
                             // It seems like bestFutureMove value should actually be bestMoveValue
                             // Discount * q of where we end up) - q of where we just were
                             // Might need to do something special when the utility of the target square is non-zero
@@ -208,7 +213,7 @@ class PositionBasedQLearningAgent() {
 
 
                             var newDiscountedVal =
-                                LEARNING_RATE * (curUtility + (DISCOUNT_RATE * bestFutureMoveValue) - existingVal)
+                                LEARNING_RATE * (curUtility + (DISCOUNT_RATE * bestFutureMoveValue) - bestMoveValue)
                             qValues[carLane]!![carEffectiveY]!![move] = existingVal + newDiscountedVal
                             model.switchLane(move)
 
@@ -218,7 +223,7 @@ class PositionBasedQLearningAgent() {
                             }
                         }
                     }
-//                }
+                }
 
 
                 model.step()
@@ -235,7 +240,7 @@ class PositionBasedQLearningAgent() {
      * Returns an array of values in order:  Left, Right, Stay
      */
     private fun getAdjacentQValues(carLane: Int, curStep: Int) : Array<Double> {
-        if(curStep >= STEPS) {
+        if(curStep >= STEPS - 10.0) {
             return arrayOf(0.0, 0.0, 0.0)
         }
         val vals = arrayOf(0.0, 0.0, 0.0)
@@ -247,7 +252,7 @@ class PositionBasedQLearningAgent() {
                     if(lane == null) {
                         vals[0] = -100.0
                     } else {
-                        var moveSet = lane[curStep + 11.0]
+                        var moveSet = lane[curStep + 10.0]
                         // Move set should never be null
                         // we should not be calling getAdjacentQValues more often than 'steps' val above
                         vals[0] = moveSet!![Move.LEFT] ?: 0.0
@@ -255,7 +260,7 @@ class PositionBasedQLearningAgent() {
                 }
                 Move.STAY -> {
                     val lane = qValues[carLane]!!
-                    val moveSet = lane[curStep + 11.0]
+                    val moveSet = lane[curStep + 10.0]
                     vals[2] = moveSet!![Move.STAY] ?: 0.0
                 }
                 Move.RIGHT -> {
@@ -263,7 +268,7 @@ class PositionBasedQLearningAgent() {
                     if(lane == null) {
                         vals[1] = -100.0
                     } else {
-                        var moveSet = lane[curStep + 11.0]
+                        var moveSet = lane[curStep + 10.0]
                         vals[1] = moveSet!![Move.RIGHT] ?: 0.0
                     }
                 }
