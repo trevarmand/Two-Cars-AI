@@ -46,7 +46,6 @@ class PositionBasedQLearningAgent {
         this.qValues = hashMapOf<Int, MutableMap<Double, MutableMap<Move, Double>>>()
         for(lane in 0 until this.model.getNumLanes()) {
             this.qValues[lane] = hashMapOf<Double, MutableMap<Move, Double>>()
-            // TODO determine why + 10 is necessary
             for(y in 0..HEIGHT.toInt() + 10) {
                 this.qValues[lane]!![y.toDouble()] = EnumMap(twoCars.model.learn.Move::class.java)
                 for(move in Move.values()) {
@@ -128,7 +127,7 @@ class PositionBasedQLearningAgent {
      * Returns a lookup table of Scroller values on the world.
      * Lookup table is indexed by [lane, yPosn]
      */
-    public fun makeUtilityMap(model: TwoCarsModelInterface) :List<Map<Double, Double>> {
+    fun makeUtilityMap(model: TwoCarsModelInterface) :List<Map<Double, Double>> {
         var ret = arrayListOf<MutableMap<Double, Double>>()
 
         for(lane in 0 until model.getNumLanes()) {
@@ -171,13 +170,7 @@ class PositionBasedQLearningAgent {
 
                 // If e-greedy has decided we should make a random move:
                 if(eGreedyTrigger < RANDOM_MOVE_CHANGE) {
-                    // TODO -> Can 0..3 return 3? Or just 2? Remove error eventually.
-                    // Move follows the same indexes described in the state:
-                    // 0 left, 1 right, 2 stay
-                    var moveIdx = Random.nextInt(0, 3)
-                    if(moveIdx == 3) {
-                        error("FOUND MOVE OF 3 INDEX ISSUE")
-                    }
+                    val moveIdx = Random.nextInt(0, 3)
                     val move = getMoveByIdx(moveIdx)
 
                     // If on the left lane moving left, or on the right lane moving right, do nothing.
@@ -198,8 +191,6 @@ class PositionBasedQLearningAgent {
                         }
 
                         // Don't update q-values of scrollers
-                        // If we find a utility (scroller) here, then we need to set stay and continue.
-                        // TODO revist and validate
                         if (curUtility != 0.0 && qValues[carLane]!![carEffectiveY]!![Move.STAY] != curUtility) {
                             qValues[carLane]!![carEffectiveY]!![Move.STAY] = curUtility
                             break
@@ -207,7 +198,8 @@ class PositionBasedQLearningAgent {
                             break
                         }
 
-                        val bestFutureMoveValue = getAdjacentQValues(newLane, curStep + 1).maxOrNull()!!
+                        val nextStepQValues = getAdjacentQValues(newLane, curStep + 1)
+                        val bestFutureMoveValue = nextStepQValues.maxOrNull()!!
                         val existingVal = qValues[carLane]!![carEffectiveY]!![move] ?: 0.0
                         var newDiscountedVal = LEARNING_RATE * (curUtility + (DISCOUNT_RATE * bestFutureMoveValue) - bestMoveValue)
                         qValues[carLane]!![carEffectiveY]!![move] = existingVal + newDiscountedVal
