@@ -23,19 +23,9 @@ internal class PositionBasedQLearningAgentTest {
 
     @Test
     fun qSolve() {
-        val model = TwoCarsModel("Circle 0 20, Circle 1 25, Circle 2 30, Square 2 35")
+        val model = TwoCarsModel("Circle 0 25, Circle 1 30")
 
         var learner = PositionBasedQLearningAgent(model, 35.0)
-
-//        var utilities = learner.makeUtilityMap(model)
-//        for((y, lane) in model.getScrollers().withIndex()) {
-//            println("Lane $y")
-//            for(scroller in lane) {
-//                print(scroller.type)
-//                print(" at " + scroller.yPosn + " ")
-//            }
-//            println()
-//        }
         learner.qSolve(30000)
     }
 }
