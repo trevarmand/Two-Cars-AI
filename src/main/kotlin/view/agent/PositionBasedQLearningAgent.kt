@@ -12,12 +12,12 @@ import kotlin.random.Random
  * is a 2D array. Each time step() is called on the model, it can be thought of as the car advancing up from the bottom.
  * This assumes a constant tick rate of one.
  */
-class PositionBasedQLearningAgent() {
+class PositionBasedQLearningAgent {
 
     /**
      * How many times to tick until we stop playing.
      */
-    private val STEPS = 70
+    private val HEIGHT : Double
 
     /**
      * This is the epsilon-greedy probability of exploration.
@@ -38,44 +38,73 @@ class PositionBasedQLearningAgent() {
 
     private var model : TwoCarsModelInterface
     // lane -> y position -> move (order: left, right, straight) -> q value
-    //
     private var qValues : MutableMap<Int, MutableMap<Double, MutableMap<Move, Double>>>
 
-    init {
-        this.model = TwoCarsModel("Circle 0 15, Circle 1 20, Circle 1 30, Square 1 40")
+    constructor(model : TwoCarsModelInterface, highestScoller: Double)  {
+        this.HEIGHT = highestScoller
+        this.model = model
         this.qValues = hashMapOf<Int, MutableMap<Double, MutableMap<Move, Double>>>()
-        for(lane in 0 until model.getNumLanes()) {
+        for(lane in 0 until this.model.getNumLanes()) {
             this.qValues[lane] = hashMapOf<Double, MutableMap<Move, Double>>()
-            for(y in 0..STEPS + 10) {
+            // TODO determine why + 10 is necessary
+            for(y in 0..HEIGHT.toInt() + 10) {
                 this.qValues[lane]!![y.toDouble()] = EnumMap(twoCars.model.learn.Move::class.java)
                 for(move in Move.values()) {
                     this.qValues[lane]!![y.toDouble()]!![move] = 0.0
                 }
             }
         }
-
         val scrollers = model.getScrollers()
-
-        // Initializes Q values for all moves at the position where collected
-        // This may be wrong - might need to initialize q values not in-place:
-        //      for example staying when you are below a reward, not for when you are actively positioned on the reward
-//        for(laneNo in scrollers.indices) {
-//            for(scroller in scrollers[laneNo]) {
-//                for(move in Move.values()) {
-//                    when (scroller.type) {
-//                        ScrollerType.CIRCLE -> this.qValues[laneNo]!![scroller.yPosn]!![move] = 100.0
-//                        ScrollerType.SQUARE -> this.qValues[laneNo]!![scroller.yPosn]!![move] = -100.0
-//                        ScrollerType.STAR -> this.qValues[laneNo]!![scroller.yPosn]!![move] = 20.0
-//                    }
-//                }
-//            }
-//        }
-        print("DONE")
-
     }
 
     fun resetModel() {
         this.model = TwoCarsModel("Circle 0 15, Circle 1 20, Circle 1 30, Square 1 40")
+    }
+
+    /**
+     * Displays the world to the console.
+     * This only works for tick rates that are whole numbers.
+     */
+    fun printQValueMap() {
+        println()
+        this.model.reset()
+        var utilities = this.makeUtilityMap(model)
+        for (y in this.HEIGHT.toInt() downTo this.model.getCarInfo().yPosn.toInt()) {
+            print("$y: ")
+            for(lane in 0 until this.model.getNumLanes()) {
+                var curBest = -100000.0
+                var bestMove = Move.STAY
+                for(move in qValues[lane]!![y.toDouble()]!!) {
+                    if(move.value >= curBest) {
+                        curBest = move.value
+                        bestMove = move.key
+                    }
+                }
+                print(" $bestMove ")
+                var utilHere = utilities[lane][y.toDouble()] ?: 0.0
+                if (utilHere != 0.0) {
+                    print(" scroller worth $utilHere at $y in lane $lane")
+                }
+
+            }
+            println()
+        }
+
+
+        for(lane in qValues) {
+            var bestMove = Move.STAY
+            for(y in lane.value) {
+                if(y.key >= 10.0) {
+                    println(y)
+
+                    for(move in y.value) {
+
+                    }
+                    print(" Move: $bestMove ")
+                }
+            }
+            println()
+        }
     }
 
     /**
@@ -101,9 +130,9 @@ class PositionBasedQLearningAgent() {
 
     /**
      * Returns a lookup table of Scroller values on the world.
-     * Lookup table is indexed by [lane, double]
+     * Lookup table is indexed by [lane, yPosn]
      */
-    fun makeUtilityMap(model: TwoCarsModelInterface) :List<Map<Double, Double>> {
+    public fun makeUtilityMap(model: TwoCarsModelInterface) :List<Map<Double, Double>> {
         var ret = arrayListOf<MutableMap<Double, Double>>()
 
         for(lane in 0 until model.getNumLanes()) {
@@ -128,7 +157,7 @@ class PositionBasedQLearningAgent() {
         for(i in 0 until iterations) {
             var curStep = 0
             resetModel()
-            while (!model.isGameOver() && curStep <= STEPS) {
+            while (!model.isGameOver() && curStep <= HEIGHT) {
 
 
                 val car = model.getCarInfo()
@@ -235,7 +264,7 @@ class PositionBasedQLearningAgent() {
                 curStep++
             }
         }
-        print("DONE")
+        this.printQValueMap()
     }
 
     /**
@@ -245,7 +274,7 @@ class PositionBasedQLearningAgent() {
      * Returns an array of values in order:  Left, Right, Stay
      */
     private fun getAdjacentQValues(carLane: Int, curStep: Int) : Array<Double> {
-        if(curStep >= STEPS - 10.0) {
+        if(curStep >= HEIGHT - 10.0) {
             return arrayOf(0.0, 0.0, 0.0)
         }
         val vals = arrayOf(0.0, 0.0, 0.0)
