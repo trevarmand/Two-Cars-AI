@@ -5,9 +5,6 @@ import twoCars.model.TwoCarsModelInterface
 import kotlin.math.abs
 import kotlin.math.pow
 
-/**
- * Different types of Q learning Agents
- */
 public class SimpleMDPLearningAgent : MDPLearningAgent {
 
     private var iterations = 10 // next steps would've been making values like these configurable in run config
@@ -31,10 +28,6 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
         initUtils()
     }
 
-    /**
-     * Will calculate utility for each lane based on objects in that lane. Will use distance from agent
-     * to weight each object
-     */
     override fun initUtils() {
         // clear utility values so they can be re-calculated after each tick
         for (i in 0..model.getNumLanes() - 1) {
@@ -57,10 +50,6 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
         }
     }
 
-    /**
-     * Will run value iteration to calculate utilities for each of the lanes
-     */
-    // this will need to be called in the entry point
     override fun solve() {
         // clear utilities from previous tick
         initUtils()
@@ -90,8 +79,6 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
         // check for maximum
         var maxUtil = maxOf(leftUtil, rightUtil, stayUtil)
 
-        // there's probably a cleaner and more efficient way to do this
-        // this is tying highest utility value to corresponding move
         if (maxUtil == leftUtil) {
             return Move.LEFT
         } else if (maxUtil == rightUtil) {
@@ -101,6 +88,13 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
         }
     }
 
+    /**
+     * Returns best utility of either going left, right, or staying
+     *
+     * @param laneNum what lane number car's currently in
+     *
+     * @return maximum utility for all possible moves
+     */
     private fun bestUtil(laneNum :Int): Double {
         // if utility doesn't exist at this point, should definitely not select it
         var leftUtil = utils[laneNum - 1] ?: -Double.MAX_VALUE

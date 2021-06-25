@@ -6,7 +6,13 @@ import twoCars.model.scroller.*
  */
 class MDPLearningUtil {
     companion object {
-        // would need to reconsider these weights if we decided to make circles/stars mandatory
+        /**
+         * Returns values for each type of scroller, or 0 if object isn't recognized
+         *
+         * @param type type of scroller
+         *
+         * @ returns double value for the scroller
+         */
         fun getScrollerVal(type :ScrollerType) : Double{
             if (type == ScrollerType.SQUARE) {
                 return -10.0

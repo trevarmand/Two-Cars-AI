@@ -1,13 +1,10 @@
 package twoCars.view.agent
 import twoCars.model.learn.Move
 
-
+/**
+ * Different types of MDP learning Agents
+ */
 interface MDPLearningAgent {
-    /**
-     * Step decision
-     * Calls on the model to step, then reports its next best move
-     */
-
     /**
      * Creates initial utility values before making TD learning passes
      */
