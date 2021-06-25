@@ -3,6 +3,7 @@ package view
 import org.junit.Test
 import twoCars.model.TwoCarsModel
 import twoCars.model.TwoCarsModelInterface
+import twoCars.model.learn.Move
 import twoCars.view.agent.SimpleMDPLearningAgent
 import kotlin.test.assertFalse
 
@@ -49,10 +50,16 @@ class SimpleMDPLearningAgentTest {
     fun simpleLearnerRun() {
         resetModel()
         for (i in 0..100) {
+            print("ITERATION ")
+            println(i)
             simpleModel.step()
             learner.solve()
             var move = learner.getBestMove(simpleModel.getCarInfo().currentLane)
+            print(" CURRENT LANE: ")
+            println(simpleModel.getCarInfo().currentLane)
             simpleModel.switchLane(move)
+            print("  MOVING: ")
+            println(move)
         }
 
         // game should not have "ended"
@@ -63,6 +70,8 @@ class SimpleMDPLearningAgentTest {
         for (lane in simpleModel.getScrollers()) {
             assert(lane.isEmpty())
         }
+
+        println()
     }
 
     @Test
@@ -70,10 +79,16 @@ class SimpleMDPLearningAgentTest {
     fun simpleReversedLearnerRun() {
         resetModel()
         for (i in 0..100) {
+            print("ITERATION ")
+            println(i)
             simpleReversedModel.step()
             reversedLearner.solve()
             var move = reversedLearner.getBestMove(simpleReversedModel.getCarInfo().currentLane)
+            print(" CURRENT LANE: ")
+            println(simpleReversedModel.getCarInfo().currentLane)
             simpleReversedModel.switchLane(move)
+            print("  MOVING: ")
+            println(move)
         }
 
         // game should not have "ended"
@@ -84,6 +99,8 @@ class SimpleMDPLearningAgentTest {
         for (lane in simpleReversedModel.getScrollers()) {
             assert(lane.isEmpty())
         }
+
+        println()
     }
 
     @Test
@@ -91,10 +108,16 @@ class SimpleMDPLearningAgentTest {
     fun avoidSquares() {
         resetModel()
         for (i in 0..100) {
+            print("ITERATION ")
+            println(i)
             simpleSquareModel.step()
             squareLearner.solve()
             var move = squareLearner.getBestMove(simpleSquareModel.getCarInfo().currentLane)
+            print(" CURRENT LANE: ")
+            println(simpleSquareModel.getCarInfo().currentLane)
             simpleSquareModel.switchLane(move)
+            print("  MOVING: ")
+            println(move)
         }
 
         //game should not have "ended"
@@ -106,6 +129,8 @@ class SimpleMDPLearningAgentTest {
         for (lane in simpleSquareModel.getScrollers()) {
             assert(lane.isEmpty())
         }
+
+        println()
     }
 
     @Test
@@ -113,10 +138,16 @@ class SimpleMDPLearningAgentTest {
     fun reachableRewards() {
         resetModel()
         for (i in 0..100) {
+            print("ITERATION ")
+            println(i)
             reachableModel.step()
             reachableLearner.solve()
             var move = reachableLearner.getBestMove(reachableModel.getCarInfo().currentLane)
+            print(" CURRENT LANE: ")
+            println(reachableModel.getCarInfo().currentLane)
             reachableModel.switchLane(move)
+            print("  MOVING: ")
+            println(move)
         }
 
         //game should not have "ended"
@@ -135,10 +166,16 @@ class SimpleMDPLearningAgentTest {
     fun decision() {
         resetModel()
         for (i in 0..100) {
+            print("ITERATION ")
+            println(i)
             decisionModel.step()
             decisionLearner.solve()
             var move = decisionLearner.getBestMove(decisionModel.getCarInfo().currentLane)
+            print(" CURRENT LANE: ")
+            println(decisionModel.getCarInfo().currentLane)
             decisionModel.switchLane(move)
+            print("  MOVING: ")
+            println(move)
         }
 
         //game should not have "ended"
