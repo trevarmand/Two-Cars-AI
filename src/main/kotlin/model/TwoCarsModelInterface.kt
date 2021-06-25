@@ -5,6 +5,13 @@ import twoCars.model.learn.Move
 
 
 interface TwoCarsModelInterface {
+
+    /**
+     * Resets the model to the state described by the string given to the constructor.
+     */
+    fun reset()
+
+
     /**
      * Switches the lane of the car towards the given side.
      *

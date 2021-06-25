@@ -12,7 +12,7 @@ class TwoCarsModel : TwoCarsModelInterface {
     private var currentTick : Int
 
     // The car!
-    private val car : Car
+    private var car : Car
 
     /**
      * The tick rate specifies how fast the obstacles are moving down the screen.
@@ -31,45 +31,15 @@ class TwoCarsModel : TwoCarsModelInterface {
     /**
      * A set of lists representing lanes, each occupied by a set of Scrollers.
      */
-    private val lanes: MutableList<MutableList<Scroller>>
+    private var lanes: MutableList<MutableList<Scroller>>
+
+    /**
+     * A string description of the world.
+     * We keep a copy so we can reset.
+     */
+    private val stringRepresentation : String
 
     private var gameOver = false
-
-    /**
-     * A basic constructor.
-     */
-    constructor() {
-        this.score = 0
-        this.currentTick = 0
-        this.tickRate = 1.0
-        this.numLanes = 3
-        this.lanes = arrayListOf<MutableList<Scroller>>()
-        this.car = Car(1, numLanes)
-    }
-
-    /**
-     * Start with a custom tickrate
-     */
-    constructor(tickRate: Double) {
-        this.score = 0
-        this.currentTick = 0
-        this.numLanes = 3
-        this.tickRate = tickRate
-        this.lanes = arrayListOf<MutableList<Scroller>>()
-        this.car = Car(1, numLanes)
-    }
-
-    /**
-     * Start with a unique number of lanes
-     */
-    constructor(numLanes: Int) {
-        this.score = 0
-        this.currentTick = 0
-        this.tickRate = 1.0
-        this.numLanes = numLanes
-        this.lanes = arrayListOf<MutableList<Scroller>>()
-        this.car = Car(numLanes / 2, numLanes)
-    }
 
     /**
      * Allows for loading a static model representation.
@@ -84,7 +54,19 @@ class TwoCarsModel : TwoCarsModelInterface {
         this.tickRate = 1.0
         this.numLanes = 0
         this.lanes = arrayListOf<MutableList<Scroller>>()
-        var objects = stringRepresentation.split(",")
+        this.car = Car(this.numLanes / 2, this.numLanes)
+        this.stringRepresentation = stringRepresentation
+        reset()
+    }
+
+    override fun reset() {
+        this.gameOver = false
+        this.score = 0
+        this.currentTick = 0
+        this.tickRate = 1.0
+        this.numLanes = 0
+        this.lanes = arrayListOf<MutableList<Scroller>>()
+        var objects = this.stringRepresentation.split(",")
         for(obj in objects) {
             var details = obj.trim().split(" ")
             var type = details[0]
@@ -124,9 +106,6 @@ class TwoCarsModel : TwoCarsModelInterface {
         return this.numLanes
     }
 
-    /**
-     * Step forward one tick. Update scroller positions and check for collisions.
-     */
     override fun step() {
         for (lane in this.lanes) {
             for (scroller in lane) {
@@ -155,7 +134,7 @@ class TwoCarsModel : TwoCarsModelInterface {
             var relevantScrollers = lane.filter { it.yPosn <= car.yPosn}
 
             for (scroller in relevantScrollers) {
-                // Handle collision with Stars or Cirlces, accounting for tick rate
+                // Handle collision with Stars or Circles, accounting for tick rate
                 if(scroller is Objective  && scroller.yPosn > car.yPosn - tickRate) {
                     if (scroller.lane != car.currentLane && scroller.isMandatory()) {
                         this.gameOver = true
@@ -168,7 +147,7 @@ class TwoCarsModel : TwoCarsModelInterface {
                 }
                 else {
                     // Remove squares that are at the bottom edge of the screen.
-                    if(scroller.yPosn <= 0.0) {
+                    if(scroller.yPosn <= car.yPosn) {
                         lane.remove(scroller)
                     }
                 }
@@ -187,6 +166,4 @@ class TwoCarsModel : TwoCarsModelInterface {
     override fun isGameOver(): Boolean {
         return this.gameOver
     }
-
-
 }
