@@ -167,3 +167,4 @@ class TwoCarsModel : TwoCarsModelInterface {
         return this.gameOver
     }
 }
+
