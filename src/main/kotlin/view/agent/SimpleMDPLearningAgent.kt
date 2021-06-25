@@ -16,7 +16,6 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
     private val model : TwoCarsModelInterface
 
     private var utils : MutableMap<Int, Double>
-    private var rewards : MutableMap<Int, Double>
 
     /**
      * Constructor that takes in model
@@ -24,7 +23,6 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
     constructor(model: TwoCarsModelInterface) {
         this.model = model
         this.utils = HashMap()
-        this.rewards = HashMap()
         initUtils()
     }
 
@@ -45,7 +43,6 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
                 var scrollerVal = MDPLearningUtil.getScrollerVal(scroller.type)
                 var finUtil = curUtil + weight.times(scrollerVal)
                 utils[laneNum] = finUtil
-                rewards[laneNum] = finUtil
             }
         }
     }
@@ -63,7 +60,7 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
                     discount = negDiscountFactor
                 }
                 var moveUtil = discount * bestUtil
-                var newUtil = rewards[j] ?: -Double.MAX_VALUE + maxOf(moveUtil, utils[j] ?: -Double.MAX_VALUE)
+                var newUtil = utils[j] ?: -Double.MAX_VALUE + maxOf(moveUtil, utils[j] ?: -Double.MAX_VALUE)
                 newUtils.put(j, newUtil)
             }
 
@@ -79,12 +76,12 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
         // check for maximum
         var maxUtil = maxOf(leftUtil, rightUtil, stayUtil)
 
-        if (maxUtil == leftUtil) {
-            return Move.LEFT
+        if (maxUtil == stayUtil) {
+            return Move.STAY
         } else if (maxUtil == rightUtil) {
             return Move.RIGHT
         } else {
-            return Move.STAY
+            return Move.LEFT
         }
     }
 
