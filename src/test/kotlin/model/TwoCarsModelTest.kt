@@ -71,6 +71,7 @@ class TwoCarsModelTest {
         for(i in 1..14) {
             simpleModel.step()
         }
+        simpleModel.switchLane(Move.LEFT)
         assert(simpleModel.getScrollers()[1][0].type == ScrollerType.SQUARE)
         assert(simpleModel.getScrollers()[1][0].yPosn == 11.0)
         simpleModel.step()

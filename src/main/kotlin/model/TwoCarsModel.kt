@@ -33,6 +33,10 @@ class TwoCarsModel : TwoCarsModelInterface {
      */
     private var lanes: MutableList<MutableList<Scroller>>
 
+    /**
+     * A string description of the world.
+     * We keep a copy so we can reset.
+     */
     private val stringRepresentation : String
 
     private var gameOver = false
@@ -62,7 +66,6 @@ class TwoCarsModel : TwoCarsModelInterface {
         this.tickRate = 1.0
         this.numLanes = 0
         this.lanes = arrayListOf<MutableList<Scroller>>()
-        this.car = Car(this.numLanes / 2, this.numLanes)
         var objects = this.stringRepresentation.split(",")
         for(obj in objects) {
             var details = obj.trim().split(" ")
@@ -88,6 +91,7 @@ class TwoCarsModel : TwoCarsModelInterface {
                 this.lanes[lane].add(newStar)
             }
         }
+        this.car = Car(this.numLanes / 2, this.numLanes)
     }
 
     override fun switchLane(direction: Move) {
@@ -102,9 +106,6 @@ class TwoCarsModel : TwoCarsModelInterface {
         return this.numLanes
     }
 
-    /**
-     * Step forward one tick. Update scroller positions and check for collisions.
-     */
     override fun step() {
         for (lane in this.lanes) {
             for (scroller in lane) {
@@ -166,3 +167,4 @@ class TwoCarsModel : TwoCarsModelInterface {
         return this.gameOver
     }
 }
+
