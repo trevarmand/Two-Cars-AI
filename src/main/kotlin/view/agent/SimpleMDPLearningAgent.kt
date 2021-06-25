@@ -10,9 +10,11 @@ import kotlin.math.pow
  */
 public class SimpleMDPLearningAgent : MDPLearningAgent {
 
-    private var iterations = 10 // TODO: make this configurable
+    private var iterations = 10 // next steps would've been making values like these configurable in run config
     private var discountFactor = 0.8
     private var negDiscountFactor = 1.2
+    private var weightPow = 50 //what weight we want to assign for scrollers that are closer to car; 50 is "happy medium"
+    // for tests
 
     private val model : TwoCarsModelInterface
 
@@ -33,7 +35,6 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
      * Will calculate utility for each lane based on objects in that lane. Will use distance from agent
      * to weight each object
      */
-    // this can probably be private since should only be called upon initialization
     override fun initUtils() {
         // clear utility values so they can be re-calculated after each tick
         for (i in 0..model.getNumLanes() - 1) {
@@ -45,7 +46,7 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
             for (scroller in lane) {
                 // objects closer to car are weighted more
                 // theoretically object should always be above car here
-                var weight = (1 + ((100 - abs(scroller.yPosn - model.getCarInfo().yPosn)) / 100)).pow(50)
+                var weight = (1 + ((100 - abs(scroller.yPosn - model.getCarInfo().yPosn)) / 100)).pow(weightPow)
                 var laneNum = scroller.lane
                 var curUtil = utils[laneNum] ?: 0.0
                 var scrollerVal = MDPLearningUtil.getScrollerVal(scroller.type)
@@ -67,7 +68,7 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
             val newUtils = HashMap<Int, Double>()
             for (j in 0..model.getNumLanes() - 1) {
                 var discount = discountFactor
-                var bestUtil = MDPLearningUtil.bestUtil(j, utils)
+                var bestUtil = bestUtil(j)
                 if (bestUtil < 0.0) {
                     // should be making negative utilities more negative
                     discount = negDiscountFactor
@@ -98,6 +99,15 @@ public class SimpleMDPLearningAgent : MDPLearningAgent {
         } else {
             return Move.STAY
         }
+    }
 
+    private fun bestUtil(laneNum :Int): Double {
+        // if utility doesn't exist at this point, should definitely not select it
+        var leftUtil = utils[laneNum - 1] ?: -Double.MAX_VALUE
+        var rightUtil = utils[laneNum + 1] ?: -Double.MAX_VALUE
+        var stayUtil = utils[laneNum] ?: -Double.MAX_VALUE
+
+        // check for maximum
+        return maxOf(leftUtil, rightUtil, stayUtil)
     }
 }

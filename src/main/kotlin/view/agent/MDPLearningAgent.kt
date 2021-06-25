@@ -14,7 +14,7 @@ interface MDPLearningAgent {
     fun initUtils()
 
     /**
-     * Performs value iteration, updates utlities accordingly
+     * Performs value iteration, updates utilities accordingly
      */
     fun solve()
 

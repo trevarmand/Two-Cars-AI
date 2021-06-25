@@ -145,7 +145,6 @@ class SimpleMDPLearningAgentTest {
         assertFalse { decisionModel.isGameOver() }
 
         // no score
-        println(decisionModel.getScore())
         assert(decisionModel.getScore() == 4)
         // should be no more scrollers
         for (lane in decisionModel.getScrollers()) {

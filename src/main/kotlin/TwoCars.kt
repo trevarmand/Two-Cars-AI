@@ -5,10 +5,9 @@ import twoCars.view.agent.SimpleMDPLearningAgent
 
 // entry point of program
 // kind of obsolete, because now running through tests
-// TODO: figure out what we want to put here
+// runs an MDP example from our tests, with print output
 fun main(args : Array<String>) {
     // Describes a basic world: Shape lane yPosn, Shape lane yPosn....
-    //val simpleModel = TwoCarsModel("Circle 0 50, Square 0 100, Square 1 25, Circle 1 80, Star 2 50, Star 2 100")
     val simpleModel = TwoCarsModel("Star 0 50, Star 0 100, Square 1 25, Circle 1 80, Circle 2 50, Square 2 100")
 
     // learner: simple for now
@@ -21,6 +20,7 @@ fun main(args : Array<String>) {
         simpleModel.step()
         learner.solve()
         var move = learner.getBestMove(simpleModel.getCarInfo().currentLane)
+        print("CAR LANE: ")
         println(simpleModel.getCarInfo().currentLane)
         simpleModel.switchLane(move)
 

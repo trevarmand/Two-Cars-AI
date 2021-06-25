@@ -1,5 +1,4 @@
 package twoCars.view.agent
-import twoCars.model.learn.Move
 import twoCars.model.scroller.*
 
 /**
@@ -7,8 +6,7 @@ import twoCars.model.scroller.*
  */
 class MDPLearningUtil {
     companion object {
-        // TODO: reconsider the weights we want to assign to these; for example would need to consider if scroller
-        //  is mandatory
+        // would need to reconsider these weights if we decided to make circles/stars mandatory
         fun getScrollerVal(type :ScrollerType) : Double{
             if (type == ScrollerType.SQUARE) {
                 return -10.0
@@ -19,17 +17,6 @@ class MDPLearningUtil {
             } else {
                 return 0.0
             }
-        }
-
-        // TODO: move this function back to learner so we don't need to pass in utils?
-        fun bestUtil(laneNum :Int, laneUtils :Map<Int, Double>): Double {
-            // if utility doesn't exist at this point, should definitely not select it
-            var leftUtil = laneUtils[laneNum - 1] ?: -Double.MAX_VALUE
-            var rightUtil = laneUtils[laneNum + 1] ?: -Double.MAX_VALUE
-            var stayUtil = laneUtils[laneNum] ?: -Double.MAX_VALUE
-
-            // check for maximum
-            return maxOf(leftUtil, rightUtil, stayUtil)
         }
     }
 }
