@@ -60,7 +60,6 @@ class TwoCarsModelTest {
         simpleModel.step()
         // Did collecting a circle increase the score?
         assert(simpleModel.getScore() == 1)
-        simpleModel.step()
         // Check that the collected circle was removed
         assert(simpleModel.getScrollers()[0][0].type == ScrollerType.SQUARE)
 
@@ -68,11 +67,11 @@ class TwoCarsModelTest {
 
         // Test if items are being removed properly
         resetModel()
-        for(i in 1..24) {
+        for(i in 1..14) {
             simpleModel.step()
         }
+        simpleModel.switchLane(Move.LEFT)
         assert(simpleModel.getScrollers()[1][0].type == ScrollerType.SQUARE)
-        assert(simpleModel.getScrollers()[1][0].yPosn == 1.0)
         simpleModel.step()
         assert(simpleModel.getScrollers()[1][0].type == ScrollerType.CIRCLE)
     }
