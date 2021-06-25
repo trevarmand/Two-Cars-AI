@@ -4,36 +4,34 @@ import twoCars.model.TwoCarsModel
 import twoCars.view.agent.SimpleMDPLearningAgent
 
 // entry point of program
-// kind of obsolete, because now running through tests
-// runs an MDP example from our tests, with print output
+// includes a key test for each learner with print output
 fun main(args : Array<String>) {
+    mdpExample()
+}
+
+fun mdpExample() {
     // Describes a basic world: Shape lane yPosn, Shape lane yPosn....
     val simpleModel = TwoCarsModel("Star 0 50, Star 0 100, Square 1 25, Circle 1 80, Circle 2 50, Square 2 100")
+    println("Star 0 50, Star 0 100, Square 1 25, Circle 1 80, Circle 2 50, Square 2 100")
 
-    // learner: simple for now
-    // should we be passing in copy of model? Can't see us mutating it at all here
+    // learner
     val learner = SimpleMDPLearningAgent(simpleModel)
 
-    // Test colliding with a circle
-    // The score should keep incrementing; the circle still needs to be removed from the world after collection.
     for (i in 0..100) {
+        print("ITERATION ")
+        println(i)
         simpleModel.step()
         learner.solve()
         var move = learner.getBestMove(simpleModel.getCarInfo().currentLane)
-        print("CAR LANE: ")
+        print(" CURRENT LANE: ")
         println(simpleModel.getCarInfo().currentLane)
         simpleModel.switchLane(move)
-
-        if (simpleModel.isGameOver()) {
-            print("\n\nCOLLISION! ")
-            print(i)
-            print(" SCORE: ")
-            print(simpleModel.getScore())
-            return
-        }
+        print("  MOVING: ")
+        println(move)
     }
 
-    print("\n\nNO COLLISION! ")
-    print(" SCORE: ")
-    print(simpleModel.getScore())
+    println()
+    print("SCORE: ")
+    println(simpleModel.getScore())
+    println()
 }
