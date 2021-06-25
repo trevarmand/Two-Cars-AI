@@ -33,6 +33,10 @@ class TwoCarsModel : TwoCarsModelInterface {
      */
     private var lanes: MutableList<MutableList<Scroller>>
 
+    /**
+     * A string description of the world.
+     * We keep a copy so we can reset.
+     */
     private val stringRepresentation : String
 
     private var gameOver = false
@@ -102,9 +106,6 @@ class TwoCarsModel : TwoCarsModelInterface {
         return this.numLanes
     }
 
-    /**
-     * Step forward one tick. Update scroller positions and check for collisions.
-     */
     override fun step() {
         for (lane in this.lanes) {
             for (scroller in lane) {
@@ -122,7 +123,6 @@ class TwoCarsModel : TwoCarsModelInterface {
     fun handleCollisions() {
 
         // First, are we hitting a square?
-        // changing <= to == for testing purposes
         var squares = this.lanes[car.currentLane].filter { it.yPosn <= car.yPosn && it.yPosn > car.yPosn - tickRate && it.type == ScrollerType.SQUARE}
         if (squares.isNotEmpty()) {
             gameOver = true
