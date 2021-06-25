@@ -159,6 +159,8 @@ class SimpleMDPLearningAgentTest {
         for (lane in reachableModel.getScrollers()) {
             assert(lane.isEmpty())
         }
+
+        println()
     }
 
     @Test
@@ -187,5 +189,7 @@ class SimpleMDPLearningAgentTest {
         for (lane in decisionModel.getScrollers()) {
             assert(lane.isEmpty())
         }
+
+        println()
     }
 }
