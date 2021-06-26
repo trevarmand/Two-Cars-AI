@@ -5,9 +5,13 @@ import twoCars.model.TwoCarsModelInterface
 import kotlin.math.abs
 import kotlin.math.pow
 
+/**
+ * Agent calculates utilities for each lane using value iteration and decides best move for car to make: left, right, or
+ * stay. Initial utilities calculated based on rewards and obstacles in each lane.
+ */
 public class SimpleMDPLearningAgent : MDPLearningAgent {
 
-    private var iterations = 10 // next steps would've been making values like these configurable in run config
+    private var iterations = 10 // next steps: making values like these configurable in run config
     private var discountFactor = 0.8
     private var negDiscountFactor = 1.2
     private var weightPow = 50 //what weight we want to assign for scrollers that are closer to car; 50 is "happy medium"

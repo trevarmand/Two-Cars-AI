@@ -2,7 +2,7 @@ package twoCars.view.agent
 import twoCars.model.learn.Move
 
 /**
- * Different types of MDP learning Agents
+ * Supports various types of MDP learning Agents for the game
  */
 interface MDPLearningAgent {
     /**

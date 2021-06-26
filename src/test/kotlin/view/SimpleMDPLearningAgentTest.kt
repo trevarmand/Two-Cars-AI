@@ -7,6 +7,9 @@ import twoCars.model.learn.Move
 import twoCars.view.agent.SimpleMDPLearningAgent
 import kotlin.test.assertFalse
 
+/**
+ * Tests check that the MDP learner can complete a variety of game boards and collect most, if not all, possible points
+ */
 class SimpleMDPLearningAgentTest {
     var simpleModel : TwoCarsModelInterface
     var simpleReversedModel : TwoCarsModelInterface
@@ -23,7 +26,8 @@ class SimpleMDPLearningAgentTest {
         this.simpleModel = TwoCarsModel("Circle 0 50, Square 0 100, Square 1 25, Circle 1 80, Star 2 50, Star 2 100")
         this.simpleReversedModel = TwoCarsModel("Star 0 50, Star 0 100, Square 1 25, Circle 1 80, Circle 2 50, Square 2 100")
         this.simpleSquareModel = TwoCarsModel("Square 0 25, Square 0 70, Square 1 50, Square 2 35")
-        // reachableModel: missed circle when Circle 1 70 was Circle 2 70
+        // reachableModel struggles to calculate utilities for lanes 2+ away from agent
+        // misses circle when Circle 1 70 -> Circle 2 70
         this.reachableModel = TwoCarsModel("Circle 0 20, Star 0 80, Star 1 50, Circle 1 70, Circle 2 30")
         this.decisionModel = TwoCarsModel("Star 0 30, Square 1 25, Circle 2 30, Star 2 31")
         this.learner = SimpleMDPLearningAgent(simpleModel)
