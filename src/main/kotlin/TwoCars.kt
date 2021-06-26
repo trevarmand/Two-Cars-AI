@@ -1,12 +1,14 @@
 package twoCars
 
 import twoCars.model.TwoCarsModel
+import twoCars.view.agent.PositionBasedQLearningAgent
 import twoCars.view.agent.SimpleMDPLearningAgent
 
 // entry point of program
 // includes a key test for each learner with print output
 fun main(args : Array<String>) {
     mdpExample()
+    qLearnExamples()
 }
 
 fun mdpExample() {
@@ -34,4 +36,13 @@ fun mdpExample() {
     print("SCORE: ")
     println(simpleModel.getScore())
     println()
+}
+
+
+fun qLearnExamples() {
+    // Unforunately, this agent isn't smart enough to avoid squares.
+    var model = TwoCarsModel("Circle 0 15, Circle 1 20, Star 0 30, Circle 0 35, Square 1 40")
+    var learner = PositionBasedQLearningAgent(model, 40.0)
+    learner.qSolve(200)
+
 }
